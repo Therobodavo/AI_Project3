@@ -13,6 +13,8 @@ public class Unit : MonoBehaviour
     [HideInInspector] public int disabled;
 
     public int target;//1-MainGun, 2-5 SecondaryGun1-4, 6-7 Missile1-2, 8 Tread
+
+    private GameObject disableFX;
     void Start()
     {
         currentMovement = movement;
@@ -33,7 +35,13 @@ public class Unit : MonoBehaviour
 
     public void DisableFX()
     {
-        Instantiate(GameManager.instance.disableFX, transform.position, transform.rotation, transform);
+        disableFX = Instantiate(GameManager.instance.disableFX, transform.position, transform.rotation, transform);
+    }
+
+    public void DestroyDisableFX()
+    {
+        Destroy(disableFX);
+        disableFX = null;
     }
 }
 
