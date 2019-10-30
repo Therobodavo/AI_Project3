@@ -8,33 +8,40 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
+    //Choose Panel(appear when unit is selected)
     public GameObject choosePanel;
     public GameObject aimButton;
     public GameObject attackButton;
     public GameObject moveButton;
     public GameObject rammingButton;
 
+    //Attack Panel(appear when unit is aiming)
     public GameObject attackPanel;
     public GameObject mainGunButton;
     public List<GameObject> secondaryGunButtons;
     public List<GameObject> missileButtons;
     public GameObject treadButton;
 
+    //Icons
     public GameObject targetPrefab;
     public GameObject errorPrefab;
 
+    //Main UI
     public GameObject mainUI;
     public Text turnText;
     public Text orgeInfoText;
     public Button nextTurn;
 
+    //Two different cameras and reference of UI when player is setting up units
     public GameObject mainCamera;
     public GameObject setupCamera;
     public GameObject setupUI;
     public GameObject setupIcons;
 
+    //Reference of Orge
     public GameObject orge;
 
+    //FXs
     public GameObject disableFX;
     public GameObject destroyFX;
     public GameObject explosionFX;
@@ -42,8 +49,10 @@ public class GameManager : MonoBehaviour
     [HideInInspector]public State state;
     [HideInInspector]public int turnNumber = 0;
 
+    //the chosen unit
     private GameObject chooseUnit;
 
+    //the state which show what player is doing
     public enum State
     {
         Idle,
@@ -60,6 +69,7 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
         }
+        #region Initialize
         choosePanel.SetActive(false);
         attackPanel.SetActive(false);
         state = State.Idle;
@@ -77,21 +87,25 @@ public class GameManager : MonoBehaviour
         treadButton.GetComponent<Button>().onClick.AddListener(delegate () { this.AimWeapon(8); });
         nextTurn.onClick.AddListener(EndTurn);
         SetUp();
+        #endregion
     }
 
-    
+
     void Update()
     {
+        //Allow player be able to switch camera when playing
         if (Input.GetKeyDown(KeyCode.T) && turnNumber > 0)
         {
             SwitchCamera();
         }
+        #region WhenPlayerClick
         if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
+                #region When player want to choose a unit or cancel choice
                 if (hit.collider != null && (state == State.Idle || state == State.Selected))
                 {
                     if (hit.collider.tag.Equals("HeavyTank") && hit.collider.gameObject.GetComponent<Unit>().disabled == 0)
@@ -160,6 +174,7 @@ public class GameManager : MonoBehaviour
                     }
                     else
                     {
+                        //when player want to cancel choice
                         if(chooseUnit != null)
                         {
                             ClearCircle(chooseUnit.transform);
@@ -173,7 +188,9 @@ public class GameManager : MonoBehaviour
                         state = State.Idle;
                     }
                 }
-                if(state == State.Moving)
+                #endregion
+                #region When player want to choose a target loction for chosen unit
+                if (state == State.Moving)
                 {
                     if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Ground") && Vector3.Distance(hit.point, chooseUnit.transform.position) <= chooseUnit.GetComponent<Unit>().currentMovement) 
                     {
@@ -205,6 +222,8 @@ public class GameManager : MonoBehaviour
                     ClearCircle(chooseUnit.transform);
                     chooseUnit = null;
                 }
+                #endregion
+                #region When player want to choose a target to aim
                 if (state == State.Aiming)
                 {
                     RaycastHit temp;
@@ -233,6 +252,8 @@ public class GameManager : MonoBehaviour
                         chooseUnit = null;
                     }
                 }
+                #endregion
+                #region When player want to choose a target to ram
                 if (state == State.Ramming)
                 {
                     if (hit.collider.tag.Equals("Orge") && Vector3.Distance(hit.point, chooseUnit.transform.position) <= chooseUnit.GetComponent<Unit>().currentMovement)
@@ -260,14 +281,18 @@ public class GameManager : MonoBehaviour
                     ClearCircle(chooseUnit.transform);
                     chooseUnit = null;
                 }
+                #endregion
             }
         }
-        if(chooseUnit != null)
+        #endregion
+        //Update the position of choose panel to let it follow the chosen unit
+        if (chooseUnit != null)
         {
             choosePanel.transform.position = Camera.main.WorldToScreenPoint(chooseUnit.transform.position);
         }
     }
 
+    //Hide choose panel and allow player to choose a target location
     private void ChooseMoveTarget()
     {
         state = State.Moving;
@@ -275,6 +300,7 @@ public class GameManager : MonoBehaviour
         choosePanel.SetActive(false);
     }
 
+    //Hide choose panel and allow player to choose a ramming target
     private void ChooseRamTarget()
     {
         state = State.Ramming;
@@ -282,12 +308,16 @@ public class GameManager : MonoBehaviour
         choosePanel.SetActive(false);
     }
 
+    //Hide choose panel and allow player to choose to aim a target
     private void ChooseAimTarget()
     {
         state = State.Aiming;
         DrawCircle(chooseUnit.transform, chooseUnit.transform.position, chooseUnit.GetComponent<Unit>().range);
         choosePanel.SetActive(false);
     }
+
+    //Attack the target of the unit
+    //Handle the combined attack by letting the units which are aiming at the same target with current chosen unit to attack
     private void AttackTarget()
     {
         if(chooseUnit.GetComponent<Unit>().target == 0)
@@ -368,6 +398,7 @@ public class GameManager : MonoBehaviour
         errorPrefab.SetActive(false);
     }
 
+    #region Draw Circle Fucntion
     LineRenderer GetLineRenderer(Transform t)
     {
         LineRenderer lr = t.GetComponent<LineRenderer>();
@@ -399,7 +430,9 @@ public class GameManager : MonoBehaviour
         LineRenderer lr = GetLineRenderer(t);
         lr.positionCount = 0;
     }
+    #endregion
 
+    //Call this function to end current turn
     void EndTurn()
     {
         state = State.WaitForOrge;
@@ -407,6 +440,7 @@ public class GameManager : MonoBehaviour
         StartNewTurn();
     }
 
+    //Call this function to start a new turn(should be called by Orge)
     public void StartNewTurn()
     {
         Unit[] units = FindObjectsOfType<Unit>();
@@ -440,6 +474,7 @@ public class GameManager : MonoBehaviour
         orge.GetComponent<Orge>().ResetOrgeWeapon();
     }
 
+    //Call this function to start the game(also you can code something here, for example if you want to call a method when game started)
     public void StartGame()
     {
         mainCamera.SetActive(true);
@@ -452,11 +487,13 @@ public class GameManager : MonoBehaviour
         UpdateOrgeInfo(1, 4, 2, 45, 3);
     }
 
+    //Update the information of Orge to UI
     public void UpdateOrgeInfo(int mainGunCount, int secondaryGunCount, int missilesCount, int treadsLeft, int speed)
     {
         orgeInfoText.text = "Orge Info\nMain Gun: " + mainGunCount.ToString() + "\nSecondary Gun: " + secondaryGunCount.ToString() + "\nMissiles: " + missilesCount.ToString() + "\n\nTreads Left: " + treadsLeft.ToString() + "\nSpeed: " + speed.ToString();
     }
 
+    //Initialize UI
     public void SetUp()
     {
         mainCamera.SetActive(false);
@@ -481,6 +518,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    //Call this method when player choose a target for a unit
     void AimWeapon(int index)
     {
         chooseUnit.GetComponent<Unit>().target = index;
@@ -490,6 +528,7 @@ public class GameManager : MonoBehaviour
         state = State.Idle;
     }
 
+    //Handle the Attack Panel(if some weapons of Orge are already destroyed, then they won't appear in UI)
     void HandleAttackPanel()
     {
         for(int i = 0; i < secondaryGunButtons.Count; i++)
@@ -518,16 +557,22 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    //Call this method when player wins
     public void Win()
     {
         Debug.Log("Win");
+        //Do something when win
     }
 
+    //Call this method when player loses
     public void Lose()
     {
         Debug.Log("Lose");
+        //Do something when lose
     }
 
+    //Use this method to handle the combat calculate
+    //return value: 0 = NE, 1 = D, 2 = X
     public int CalculateCombat(int attack, int defense)
     {
         int dieRoll = (int)Random.Range(1, 7);

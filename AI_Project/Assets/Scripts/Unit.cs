@@ -8,11 +8,11 @@ public class Unit : MonoBehaviour
     public int range;
     public int defense;
     public int movement;
-    [HideInInspector] public float currentMovement;
-    [HideInInspector] public bool isAttacked;
-    [HideInInspector] public int disabled;
+    [HideInInspector] public float currentMovement;//the remaining movement
+    [HideInInspector] public bool isAttacked;//is this unit already attacked this turn
+    [HideInInspector] public int disabled;//is this unit disabled(0 = not disabled, 1 = disabled)
 
-    public int target;//1-MainGun, 2-5 SecondaryGun1-4, 6-7 Missile1-2, 8 Tread
+    public int target;//1 = MainGun, 2-5 = SecondaryGun1-4, 6-7 = Missile1-2, 8 = Tread
 
     private GameObject disableFX;
     void Start()
@@ -22,6 +22,7 @@ public class Unit : MonoBehaviour
         disabled = 0;
     }
 
+    //Use this method to reset the state of the unit when each turn starts
     public void ResetState(bool isResetDisabled)
     {
         currentMovement = movement;

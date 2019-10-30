@@ -22,9 +22,10 @@ public class Orge : MonoBehaviour
     
     void Update()
     {
-        
+        //About how to detect units: Use FindObjectsOfTypes or OverlapSphere or etc
     }
 
+    //Set the attack/range/defense of the weapons of Orge
     void InitializeWeapons()
     {
         mainGun = new Weapon(4, 3, 4);
@@ -36,6 +37,7 @@ public class Orge : MonoBehaviour
         missiles.Add(new Weapon(6, 5, 2));
     }
 
+    //Use this method to cause damage to unit by a certain weapon(doesn't include movement)
     public void AttackUnit(Unit unit, int weapon)//1-MainGun, 2-5 SecondaryGun1-4, 6-7 Missile1-2
     {
         int combatResult = 0;
@@ -92,6 +94,7 @@ public class Orge : MonoBehaviour
         }
     }
 
+    //Use this method to ram unit(doesn't include movement)
     public void RamUnit(Unit unit)
     {
         if(ramNumber >= 2)
@@ -119,6 +122,7 @@ public class Orge : MonoBehaviour
         ramNumber++;
     }
 
+    //Use this method to handle the treads damage(automatically decrease speed if need)
     public void LoseTreads(int lost)
     {
         treadsLeft -= lost;
@@ -142,6 +146,7 @@ public class Orge : MonoBehaviour
         UpdateOrgeInfo();
     }
 
+    //Use this method to reset the Orge's state when each turn starts
     public void ResetOrgeWeapon()
     {
         mainGun.isAttacked = false;
@@ -152,6 +157,7 @@ public class Orge : MonoBehaviour
         ramNumber = 0;
     }
 
+    //Update current Orge's state information to UI
     public void UpdateOrgeInfo()
     {
         int mg, sg, mis;

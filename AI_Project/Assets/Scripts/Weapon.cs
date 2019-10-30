@@ -8,9 +8,9 @@ public class Weapon
     public int attack;
     public int range;
     public int defense;
-    public bool isDestroyed;
-    public bool isAttacked;
-    public bool isUsedMissile;
+    public bool isDestroyed;//is this weapon destroyed
+    public bool isAttacked;//is this weapon already attacked this turn
+    public bool isUsedMissile;//is this weapon a missile and it's already attacked
 
     public Weapon() { }
 

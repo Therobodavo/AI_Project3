@@ -28,7 +28,7 @@ public class AStarPathFindingForOrge : MonoBehaviour
 
     void Update()
     {
-
+        //Check if reach next path point & Deal with movement
         if (targetPointIndex < pathRecords.Count && targetPointIndex >= 0)
         {
             transform.position = Vector3.MoveTowards(transform.position, new Vector3(pathRecords[targetPointIndex].x, pathRecords[targetPointIndex].y + 1.0f, pathRecords[targetPointIndex].z), 10.0f * Time.deltaTime);
@@ -40,7 +40,7 @@ public class AStarPathFindingForOrge : MonoBehaviour
                 if (targetPointIndex == pathRecords.Count)
                 {
                     targetPointIndex = -1;
-                    //EndMoving
+                    //Code here if you want to do something when Orge finish movement
                 }
             }
         }
@@ -230,6 +230,7 @@ public class AStarPathFindingForOrge : MonoBehaviour
         }
     }
 
+    //Set a ramdom reachable location in the scene and go there
     void SetRandomLocationAsTarget()
     {
         CopyNodes();
@@ -256,6 +257,8 @@ public class AStarPathFindingForOrge : MonoBehaviour
         SetLocationAsTarget(randomPoint);
     }
 
+    //Use this method to move the Orge, parameter is the target location
+    //If AI can find a path, return true. If AI can't find a path, return false and the AI will do nothing
     public bool SetLocationAsTarget(Vector3 location)
     {
         bool canReach;
