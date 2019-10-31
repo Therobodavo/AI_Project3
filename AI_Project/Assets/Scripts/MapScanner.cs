@@ -8,14 +8,14 @@ public class MapScanner : MonoBehaviour
 
     public float cellWidth;
     public float cellLength;
-    public Vector3 startPoint;
-    public float mapWidth;
-    public float mapLength;
-    public float scanHeight;
-    public float heightTolerance;
-    [HideInInspector]public Node[,] grid;
-    [HideInInspector]public int xNumber;
-    [HideInInspector]public int yNumber;
+    public Vector3 startPoint;//The start point where the scanner start to scan the map
+    public float mapWidth;//The width of the map
+    public float mapLength;//The length of the map
+    public float scanHeight;//The height from where the scanner will start to scan
+    public float heightTolerance;//Tolerable height difference of character movement
+    [HideInInspector]public Node[,] grid;//The information of the map
+    [HideInInspector]public int xNumber;//The number of columns
+    [HideInInspector]public int yNumber;//The number of rows
 
     public LayerMask scanLayers;
 

@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Node : System.IComparable
 {
-    public bool isObstacle = true;
-    public Vector3 position = Vector3.zero;
-    public int x = 0;
-    public int y = 0;
+    public bool isObstacle = true;//Is this node obstacle?
+    public Vector3 position = Vector3.zero;//The position of this node in world space
+    public int x = 0;//The x index of the node in grid
+    public int y = 0;//The y index of the node in grid
     public int g = 0;
     public int h = 0;
     public int f = 0;
