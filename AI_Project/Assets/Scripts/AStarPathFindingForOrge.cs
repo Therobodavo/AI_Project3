@@ -41,10 +41,17 @@ public class AStarPathFindingForOrge : MonoBehaviour
                 {
                     targetPointIndex = -1;
                     //Code here if you want to do something when Orge finish movement
+                    ReachTarget();
                 }
             }
         }
 
+
+    }
+
+    //Will be called when the Orge reach its current pathfinding target
+    public void ReachTarget()
+    {
 
     }
 
