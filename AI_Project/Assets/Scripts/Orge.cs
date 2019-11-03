@@ -30,6 +30,7 @@ public class Orge : MonoBehaviour
     void Update()
     {
         //About how to detect units: Use FindObjectsOfTypes or OverlapSphere or etc
+        //Debug.Log(remainMovement.ToString() + " " + ramNumber.ToString());
 
     }
 
@@ -231,49 +232,53 @@ public class Orge : MonoBehaviour
         else
         {
             Ram();
-            if (GetPossibleTotalAttackedValueFromUnits(transform.position) <= acceptableTotalAttackValueFromUnits)
+        }
+    }
+
+    void DecisionAfterRam()
+    {
+        if (GetPossibleTotalAttackedValueFromUnits(transform.position) <= acceptableTotalAttackValueFromUnits)
+        {
+            if (remainMovement >= 1 && GetPossibleTotalAttackedValueFromUnits(GetComponent<AStarPathFindingForOrge>().EstimatePostion(1, GameManager.instance.commandPost.transform.position)) <= acceptableTotalAttackValueFromUnits)
             {
-                if (remainMovement >= 1 && GetPossibleTotalAttackedValueFromUnits(GetComponent<AStarPathFindingForOrge>().EstimatePostion(1, GameManager.instance.commandPost.transform.position)) <= acceptableTotalAttackValueFromUnits)
+                if (remainMovement >= 2 && GetPossibleTotalAttackedValueFromUnits(GetComponent<AStarPathFindingForOrge>().EstimatePostion(2, GameManager.instance.commandPost.transform.position)) <= acceptableTotalAttackValueFromUnits)
                 {
-                    if (remainMovement >= 2 && GetPossibleTotalAttackedValueFromUnits(GetComponent<AStarPathFindingForOrge>().EstimatePostion(2, GameManager.instance.commandPost.transform.position)) <= acceptableTotalAttackValueFromUnits)
+                    if (remainMovement >= 3 && GetPossibleTotalAttackedValueFromUnits(GetComponent<AStarPathFindingForOrge>().EstimatePostion(3, GameManager.instance.commandPost.transform.position)) <= acceptableTotalAttackValueFromUnits)
                     {
-                        if (remainMovement >= 3 && GetPossibleTotalAttackedValueFromUnits(GetComponent<AStarPathFindingForOrge>().EstimatePostion(3, GameManager.instance.commandPost.transform.position)) <= acceptableTotalAttackValueFromUnits)
-                        {
-                            GetComponent<AStarPathFindingForOrge>().MoveTowardsCommandPost(3);
-                            AttackAfterMove();
-                        }
-                        else
-                        {
-                            GetComponent<AStarPathFindingForOrge>().MoveTowardsCommandPost(2);
-                            AttackAfterMove();
-                        }
+                        GetComponent<AStarPathFindingForOrge>().MoveTowardsCommandPost(3);
+                        AttackAfterMove();
                     }
                     else
                     {
-                        GetComponent<AStarPathFindingForOrge>().MoveTowardsCommandPost(1);
+                        GetComponent<AStarPathFindingForOrge>().MoveTowardsCommandPost(2);
                         AttackAfterMove();
                     }
                 }
                 else
                 {
-                    int seed = Random.Range(0, 2);
-                    if(seed == 1)
-                    {
-                        GetComponent<AStarPathFindingForOrge>().MoveTowardsCommandPost(1);
-                        AttackAfterMove();
-                    }
-                    else if(seed == 0)
-                    {
-                        GetComponent<AStarPathFindingForOrge>().RunAway(remainMovement, GetLocationOfClosestUnit(transform.position));
-                        AttackAfterMove();
-                    }
+                    GetComponent<AStarPathFindingForOrge>().MoveTowardsCommandPost(1);
+                    AttackAfterMove();
                 }
             }
             else
             {
-                GetComponent<AStarPathFindingForOrge>().RunAway(remainMovement, GetLocationOfClosestUnit(transform.position));
-                AttackAfterMove();
+                int seed = Random.Range(0, 2);
+                if (seed == 1)
+                {
+                    GetComponent<AStarPathFindingForOrge>().MoveTowardsCommandPost(1);
+                    AttackAfterMove();
+                }
+                else if (seed == 0)
+                {
+                    GetComponent<AStarPathFindingForOrge>().RunAway(remainMovement, GetLocationOfClosestUnit(transform.position));
+                    AttackAfterMove();
+                }
             }
+        }
+        else
+        {
+            GetComponent<AStarPathFindingForOrge>().RunAway(remainMovement, GetLocationOfClosestUnit(transform.position));
+            AttackAfterMove();
         }
     }
 
@@ -422,6 +427,7 @@ public class Orge : MonoBehaviour
         List<Unit> units = GetUnitsInRammingRange(transform.position, remainMovement);
         if(units.Count <= 0 || ramNumber >= 2)
         {
+            DecisionAfterRam();
             return;
         }
         int minDistance = 100;
@@ -437,7 +443,7 @@ public class Orge : MonoBehaviour
         GetComponent<AStarPathFindingForOrge>().SetLocationAsTarget(temp.transform.position);
         RamUnit(temp);
         remainMovement -= minDistance;
-        Invoke("Ram", 0.5f);
+        Invoke("Ram", 1.0f);
     }
 
     public void Attack(Vector3 position)
