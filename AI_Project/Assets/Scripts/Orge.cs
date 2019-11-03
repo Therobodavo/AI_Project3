@@ -30,7 +30,7 @@ public class Orge : MonoBehaviour
     void Update()
     {
         //About how to detect units: Use FindObjectsOfTypes or OverlapSphere or etc
-        //Debug.Log(remainMovement.ToString() + " " + ramNumber.ToString());
+        Debug.Log(remainMovement.ToString() + " " + ramNumber.ToString());
 
     }
 
@@ -440,10 +440,18 @@ public class Orge : MonoBehaviour
                 temp = i;
             }
         }
-        GetComponent<AStarPathFindingForOrge>().SetLocationAsTarget(temp.transform.position);
-        RamUnit(temp);
-        remainMovement -= minDistance;
-        Invoke("Ram", 1.0f);
+        if(remainMovement >= minDistance)
+        {
+            GetComponent<AStarPathFindingForOrge>().SetLocationAsTarget(temp.transform.position);
+            RamUnit(temp);
+            remainMovement -= minDistance;
+            Invoke("Ram", 1.0f);
+        }
+        else
+        {
+            DecisionAfterRam();
+            return;
+        }
     }
 
     public void Attack(Vector3 position)
