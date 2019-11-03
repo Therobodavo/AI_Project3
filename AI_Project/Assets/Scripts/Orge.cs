@@ -10,6 +10,8 @@ public class Orge : MonoBehaviour
     public List<Weapon> secondaryGuns = new List<Weapon>();
     public List<Weapon> missiles = new List<Weapon>();
     public int acceptableTotalAttackValueFromUnits = 6;
+    public bool isRamHeavyTank = false;
+    [Range(0, 100)]public int runAwayWeights = 50;
 
     public List<Transform> spawnPoints;
 
@@ -24,6 +26,7 @@ public class Orge : MonoBehaviour
         treadsLeft = 45;
         speed = 3;
         ramNumber = 0;
+        remainMovement = speed;
     }
 
     
@@ -80,6 +83,7 @@ public class Orge : MonoBehaviour
         if (unit.gameObject.tag.Equals("CommandPost"))
         {
             Instantiate(GameManager.instance.destroyFX, unit.transform.position, unit.transform.rotation);
+            Destroy(unit.gameObject);
             GameManager.instance.Lose();
             return;
         }
@@ -119,6 +123,7 @@ public class Orge : MonoBehaviour
         else if (unit.gameObject.tag.Equals("CommandPost"))
         {
             Instantiate(GameManager.instance.destroyFX, unit.transform.position, unit.transform.rotation);
+            Destroy(unit.gameObject);
             GameManager.instance.Lose();
             return;
         }
@@ -239,11 +244,14 @@ public class Orge : MonoBehaviour
     {
         if (GetPossibleTotalAttackedValueFromUnits(transform.position) <= acceptableTotalAttackValueFromUnits)
         {
-            if (remainMovement >= 1 && GetPossibleTotalAttackedValueFromUnits(GetComponent<AStarPathFindingForOrge>().EstimatePostion(1, GameManager.instance.commandPost.transform.position)) <= acceptableTotalAttackValueFromUnits)
+            Vector3 estimate = GetComponent<AStarPathFindingForOrge>().EstimatePostion(1, GameManager.instance.commandPost.transform.position);
+            if (remainMovement >= 1 && !IsOverlapUnit(estimate) && GetPossibleTotalAttackedValueFromUnits(estimate) <= acceptableTotalAttackValueFromUnits)
             {
-                if (remainMovement >= 2 && GetPossibleTotalAttackedValueFromUnits(GetComponent<AStarPathFindingForOrge>().EstimatePostion(2, GameManager.instance.commandPost.transform.position)) <= acceptableTotalAttackValueFromUnits)
+                estimate = GetComponent<AStarPathFindingForOrge>().EstimatePostion(2, GameManager.instance.commandPost.transform.position);
+                if (remainMovement >= 2 && !IsOverlapUnit(estimate) && GetPossibleTotalAttackedValueFromUnits(estimate) <= acceptableTotalAttackValueFromUnits)
                 {
-                    if (remainMovement >= 3 && GetPossibleTotalAttackedValueFromUnits(GetComponent<AStarPathFindingForOrge>().EstimatePostion(3, GameManager.instance.commandPost.transform.position)) <= acceptableTotalAttackValueFromUnits)
+                    estimate = GetComponent<AStarPathFindingForOrge>().EstimatePostion(3, GameManager.instance.commandPost.transform.position);
+                    if (remainMovement >= 3 && !IsOverlapUnit(estimate) && GetPossibleTotalAttackedValueFromUnits(estimate) <= acceptableTotalAttackValueFromUnits)
                     {
                         GetComponent<AStarPathFindingForOrge>().MoveTowardsCommandPost(3);
                         AttackAfterMove();
@@ -262,13 +270,13 @@ public class Orge : MonoBehaviour
             }
             else if(remainMovement >= 1)
             {
-                int seed = Random.Range(0, 2);
-                if (seed == 1)
+                int seed = Random.Range(0, 100);
+                if (seed >= runAwayWeights)
                 {
                     GetComponent<AStarPathFindingForOrge>().MoveTowardsCommandPost(1);
                     AttackAfterMove();
                 }
-                else if (seed == 0)
+                else
                 {
                     GetComponent<AStarPathFindingForOrge>().RunAway(remainMovement, GetLocationOfClosestUnit(transform.position));
                     AttackAfterMove();
@@ -421,6 +429,20 @@ public class Orge : MonoBehaviour
         return sum;
     }
 
+    bool IsOverlapUnit(Vector3 location)
+    {
+        List<Unit> units = GetUnitsInMainGunRange(location);
+
+        foreach (var i in units)
+        {
+            if(Vector3.Distance(location, i.transform.position) < 1.0f)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void AttackAfterMove()
     {
         isGoingToAttack = true;
@@ -434,13 +456,18 @@ public class Orge : MonoBehaviour
             DecisionAfterRam();
             return;
         }
-        int minDistance = 100;
+        int minDistance = 10000;
         Unit temp = units[0];
         foreach (var i in units)
         {
-            if (GetComponent<AStarPathFindingForOrge>().DistanceBetweenTwoPoints(transform.position, i.transform.position) < minDistance)
+            if (isRamHeavyTank && i.tag.Equals("HeavyTank"))
             {
-                minDistance = GetComponent<AStarPathFindingForOrge>().DistanceBetweenTwoPoints(transform.position, i.transform.position);
+                continue;
+            }
+            int distance = GetComponent<AStarPathFindingForOrge>().DistanceBetweenTwoPoints(transform.position, i.transform.position);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
                 temp = i;
             }
         }

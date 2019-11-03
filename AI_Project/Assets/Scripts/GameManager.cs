@@ -100,6 +100,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        //Debug.Log(state);
         //Allow player be able to switch camera when playing
         if (Input.GetKeyDown(KeyCode.T) && turnNumber > 0)
         {
@@ -257,6 +258,7 @@ public class GameManager : MonoBehaviour
                     {
                         errorPrefab.SetActive(true);
                         errorPrefab.transform.position = Input.mousePosition;
+                        attackPanel.SetActive(false);
                         Invoke("HideErrorPrefab", 0.5f);
                         ClearCircle(chooseUnit.transform);
                         state = State.Idle;
@@ -331,6 +333,10 @@ public class GameManager : MonoBehaviour
     //Handle the combined attack by letting the units which are aiming at the same target with current chosen unit to attack
     private void AttackTarget()
     {
+        if(chooseUnit == null)
+        {
+            return;
+        }
         if(chooseUnit.GetComponent<Unit>().target == 0)
         {
             return;
@@ -542,11 +548,14 @@ public class GameManager : MonoBehaviour
     //Call this method when player choose a target for a unit
     void AimWeapon(int index)
     {
-        chooseUnit.GetComponent<Unit>().target = index;
-        chooseUnit.transform.LookAt(orge.transform.position);
-        attackPanel.SetActive(false);
-        chooseUnit = null;
-        state = State.Idle;
+        if(chooseUnit != null)
+        {
+            chooseUnit.GetComponent<Unit>().target = index;
+            chooseUnit.transform.LookAt(orge.transform.position);
+            attackPanel.SetActive(false);
+            chooseUnit = null;
+            state = State.Idle;
+        }
     }
 
     //Handle the Attack Panel(if some weapons of Orge are already destroyed, then they won't appear in UI)
@@ -581,8 +590,9 @@ public class GameManager : MonoBehaviour
     //Call this method when player wins
     public void Win()
     {
-        Debug.Log("Win");
+        //Debug.Log("Win");
         //Do something when win
+        mainUI.SetActive(false);
         winPanel.SetActive(true);
         Time.timeScale = 0;
     }
@@ -590,8 +600,9 @@ public class GameManager : MonoBehaviour
     //Call this method when player loses
     public void Lose()
     {
-        Debug.Log("Lose");
+        //Debug.Log("Lose");
         //Do something when lose
+        mainUI.SetActive(false);
         losePanel.SetActive(true);
         Time.timeScale = 0;
     }

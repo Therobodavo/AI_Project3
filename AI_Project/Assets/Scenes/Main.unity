@@ -12909,5 +12909,13 @@ PrefabInstance:
       propertyPath: spawnPoints.Array.data[3]
       value: 
       objectReference: {fileID: 84337390}
+    - target: {fileID: 916350063, guid: 8f9cc641fcaf2f849b125a021c4286aa, type: 3}
+      propertyPath: runAwayWeights
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 916350063, guid: 8f9cc641fcaf2f849b125a021c4286aa, type: 3}
+      propertyPath: isRamHeavyTank
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f9cc641fcaf2f849b125a021c4286aa, type: 3}
