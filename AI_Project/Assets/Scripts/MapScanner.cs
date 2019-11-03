@@ -78,11 +78,11 @@ public class MapScanner : MonoBehaviour
                 }
                 if (grid[i, j].isObstacle == false)
                 {
-                    Debug.DrawLine(new Vector3(grid[i, j].position.x, grid[i, j].position.y, grid[i, j].position.z), new Vector3(grid[i, j].position.x, grid[i, j].position.y + 0.5f, grid[i, j].position.z), Color.yellow, 30.0f);
+                    //Debug.DrawLine(new Vector3(grid[i, j].position.x, grid[i, j].position.y, grid[i, j].position.z), new Vector3(grid[i, j].position.x, grid[i, j].position.y + 0.5f, grid[i, j].position.z), Color.yellow, 30.0f);
                 }
                 else
                 {
-                    Debug.DrawLine(new Vector3(grid[i, j].position.x, grid[i, j].position.y, grid[i, j].position.z), new Vector3(grid[i, j].position.x, grid[i, j].position.y + 4.0f, grid[i, j].position.z), Color.red, 30.0f);
+                    //Debug.DrawLine(new Vector3(grid[i, j].position.x, grid[i, j].position.y, grid[i, j].position.z), new Vector3(grid[i, j].position.x, grid[i, j].position.y + 4.0f, grid[i, j].position.z), Color.red, 30.0f);
                 }
             }
         }

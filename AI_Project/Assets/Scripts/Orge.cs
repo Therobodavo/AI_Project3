@@ -9,7 +9,14 @@ public class Orge : MonoBehaviour
     public Weapon mainGun;
     public List<Weapon> secondaryGuns = new List<Weapon>();
     public List<Weapon> missiles = new List<Weapon>();
+    public int acceptableTotalAttackValueFromUnits = 6;
+
+    public List<Transform> spawnPoints;
+
+    [HideInInspector] public bool isGoingToAttack = false;
+
     private int ramNumber;
+    private int remainMovement;
 
     void Start()
     {
@@ -156,6 +163,7 @@ public class Orge : MonoBehaviour
             i.isAttacked = false;
         }
         ramNumber = 0;
+        remainMovement = speed;
     }
 
     //Update current Orge's state information to UI
@@ -188,4 +196,322 @@ public class Orge : MonoBehaviour
         }
         GameManager.instance.UpdateOrgeInfo(mg, sg, mis, treadsLeft, speed);
     }
+
+    public void ChooseSpawnLocation()
+    {
+        int minDistance = 10000;
+        int minIndex = 0;
+        for(int i = 0; i < spawnPoints.Count; i++)
+        {
+
+            if (GetComponent<AStarPathFindingForOrge>().DistanceBetweenTwoPoints(spawnPoints[i].position, GameManager.instance.commandPost.transform.position) < minDistance)
+            {
+                minDistance = GetComponent<AStarPathFindingForOrge>().DistanceBetweenTwoPoints(spawnPoints[i].position, GameManager.instance.commandPost.transform.position);
+                minIndex = i;
+            }
+        }
+        transform.position = spawnPoints[minIndex].position;
+    }
+
+    public void AIDecision()
+    {
+        if (CanAttackCommandPost() != -1)
+        {
+            if(GetMaxAttackRange() == 0)
+            {
+                GetComponent<AStarPathFindingForOrge>().MoveTowardsCommandPost(CanAttackCommandPost());
+                RamUnit(GameManager.instance.commandPost.GetComponent<Unit>());
+            }
+            else
+            {
+                GetComponent<AStarPathFindingForOrge>().MoveTowardsCommandPost(CanAttackCommandPost());
+                AttackAfterMove();
+            }
+        }
+        else
+        {
+            Ram();
+            if (GetPossibleTotalAttackedValueFromUnits(transform.position) <= acceptableTotalAttackValueFromUnits)
+            {
+                if (remainMovement >= 1 && GetPossibleTotalAttackedValueFromUnits(GetComponent<AStarPathFindingForOrge>().EstimatePostion(1, GameManager.instance.commandPost.transform.position)) <= acceptableTotalAttackValueFromUnits)
+                {
+                    if (remainMovement >= 2 && GetPossibleTotalAttackedValueFromUnits(GetComponent<AStarPathFindingForOrge>().EstimatePostion(2, GameManager.instance.commandPost.transform.position)) <= acceptableTotalAttackValueFromUnits)
+                    {
+                        if (remainMovement >= 3 && GetPossibleTotalAttackedValueFromUnits(GetComponent<AStarPathFindingForOrge>().EstimatePostion(3, GameManager.instance.commandPost.transform.position)) <= acceptableTotalAttackValueFromUnits)
+                        {
+                            GetComponent<AStarPathFindingForOrge>().MoveTowardsCommandPost(3);
+                            AttackAfterMove();
+                        }
+                        else
+                        {
+                            GetComponent<AStarPathFindingForOrge>().MoveTowardsCommandPost(2);
+                            AttackAfterMove();
+                        }
+                    }
+                    else
+                    {
+                        GetComponent<AStarPathFindingForOrge>().MoveTowardsCommandPost(1);
+                        AttackAfterMove();
+                    }
+                }
+                else
+                {
+                    int seed = Random.Range(0, 2);
+                    if(seed == 1)
+                    {
+                        GetComponent<AStarPathFindingForOrge>().MoveTowardsCommandPost(1);
+                        AttackAfterMove();
+                    }
+                    else if(seed == 0)
+                    {
+                        GetComponent<AStarPathFindingForOrge>().RunAway(remainMovement, GetLocationOfClosestUnit(transform.position));
+                        AttackAfterMove();
+                    }
+                }
+            }
+            else
+            {
+                GetComponent<AStarPathFindingForOrge>().RunAway(remainMovement, GetLocationOfClosestUnit(transform.position));
+                AttackAfterMove();
+            }
+        }
+    }
+
+    int GetMaxAttackRange()
+    {
+        int maxAttackRange = 0;
+        foreach (var i in secondaryGuns)
+        {
+            if (!i.isDestroyed && !i.isAttacked)
+            {
+                maxAttackRange = 3;
+                break;
+            }
+        }
+        if (!mainGun.isDestroyed && !mainGun.isAttacked)
+        {
+            maxAttackRange = 4;
+        }
+        foreach (var i in missiles)
+        {
+            if (!i.isDestroyed && !i.isUsedMissile)
+            {
+                maxAttackRange = 6;
+                break;
+            }
+        }
+        return maxAttackRange;
+    }
+
+    int CanAttackCommandPost()
+    {
+        int maxAttackRange = GetMaxAttackRange();
+        if (Vector3.Distance(GameManager.instance.commandPost.transform.position, transform.position) <= maxAttackRange && !GameManager.instance.IsBlockedBetweenTwoPoints(GameManager.instance.commandPost.transform.position, transform.position))
+        {
+            return 0;
+        }
+        for(int i = 1; i <= speed; i++)
+        {
+            Vector3 estimatePoint = GetComponent<AStarPathFindingForOrge>().EstimatePostion(i, GameManager.instance.commandPost.transform.position);
+            if (Vector3.Distance(GameManager.instance.commandPost.transform.position, estimatePoint) <= maxAttackRange && !GameManager.instance.IsBlockedBetweenTwoPoints(GameManager.instance.commandPost.transform.position, estimatePoint)) 
+            {
+                return i;
+            }
+        }
+        return -1;
+
+    }
+
+    Vector3 GetLocationOfClosestUnit(Vector3 position)
+    {
+        int minDistance = 100;
+        Vector3 temp = Vector3.zero;
+        foreach(var i in GetUnitsInMainGunRange(position))
+        {
+            if (GetComponent<AStarPathFindingForOrge>().DistanceBetweenTwoPoints(position, i.transform.position) < minDistance) 
+            {
+                minDistance = GetComponent<AStarPathFindingForOrge>().DistanceBetweenTwoPoints(position, i.transform.position);
+                temp = i.transform.position;
+            }
+        }
+        return temp;
+    }
+
+    List<Unit> GetUnitsInRammingRange(Vector3 position, int distance)
+    {
+        List<Unit> units = new List<Unit>();
+        foreach (var i in FindObjectsOfType<Unit>())
+        {
+            if (GetComponent<AStarPathFindingForOrge>().DistanceBetweenTwoPoints(i.transform.position, position) <= distance)
+            {
+                units.Add(i);
+            }
+        }
+        return units;
+    }
+
+    List<Unit> GetUnitsInMainGunRange(Vector3 position)
+    {
+        List<Unit> units = new List<Unit>();
+        foreach(var i in FindObjectsOfType<Unit>())
+        {
+            if(Vector3.Distance(i.transform.position, position) < 4.0f && !GameManager.instance.IsBlockedBetweenTwoPoints(i.transform.position, position))
+            {
+                units.Add(i);
+            }
+        }
+        return units;
+    }
+
+    List<Unit> GetUnitsInSecondaryGunRange(Vector3 position)
+    {
+        List<Unit> units = new List<Unit>();
+        foreach (var i in FindObjectsOfType<Unit>())
+        {
+            if (Vector3.Distance(i.transform.position, position) < 3.0f && !GameManager.instance.IsBlockedBetweenTwoPoints(i.transform.position, position))
+            {
+                units.Add(i);
+            }
+        }
+        return units;
+    }
+
+    List<Unit> GetUnitsInMissileRange(Vector3 position)
+    {
+        List<Unit> units = new List<Unit>();
+        foreach (var i in FindObjectsOfType<Unit>())
+        {
+            if (Vector3.Distance(i.transform.position, position) < 6.0f && !GameManager.instance.IsBlockedBetweenTwoPoints(i.transform.position, position))
+            {
+                units.Add(i);
+            }
+        }
+        return units;
+    }
+
+    List<Unit> GetUnitsCanAttackOrge(Vector3 position)
+    {
+        List<Unit> units = new List<Unit>();
+        foreach (var i in FindObjectsOfType<Unit>())
+        {
+            if (Vector3.Distance(i.transform.position, position) < i.range && !GameManager.instance.IsBlockedBetweenTwoPoints(i.transform.position, position))
+            {
+                units.Add(i);
+            }
+        }
+        return units;
+    }
+    
+    int GetPossibleTotalAttackedValueFromUnits(Vector3 position)
+    {
+        int sum = 0;
+        foreach(var i in GetUnitsCanAttackOrge(position))
+        {
+            sum += i.attack;
+        }
+        return sum;
+    }
+
+    public void AttackAfterMove()
+    {
+        isGoingToAttack = true;
+    }
+
+    public void Ram()
+    {
+        List<Unit> units = GetUnitsInRammingRange(transform.position, remainMovement);
+        if(units.Count <= 0 || ramNumber >= 2)
+        {
+            return;
+        }
+        int minDistance = 100;
+        Unit temp = units[0];
+        foreach (var i in units)
+        {
+            if (GetComponent<AStarPathFindingForOrge>().DistanceBetweenTwoPoints(transform.position, i.transform.position) < minDistance)
+            {
+                minDistance = GetComponent<AStarPathFindingForOrge>().DistanceBetweenTwoPoints(transform.position, i.transform.position);
+                temp = i;
+            }
+        }
+        GetComponent<AStarPathFindingForOrge>().SetLocationAsTarget(temp.transform.position);
+        RamUnit(temp);
+        remainMovement -= minDistance;
+        Invoke("Ram", 0.5f);
+    }
+
+    public void Attack(Vector3 position)
+    {
+        List<Unit> units = GetUnitsInMainGunRange(position);
+        if (units.Count > 0 && !mainGun.isDestroyed)
+        {
+            int minDefense = 10;
+            Unit temp = units[0];
+            foreach (var i in units)
+            {
+                if(i.disabled == 1 || i.disabled == 2)
+                {
+                    temp = i;
+                    break;
+                }
+                if(i.defense < minDefense)
+                {
+                    minDefense = i.defense;
+                    temp = i;
+                }
+            }
+            AttackUnit(temp, 1);
+        }
+        List<Unit> units2 = GetUnitsInSecondaryGunRange(position);
+        for (int j = 0; j < secondaryGuns.Count; j++) 
+        {
+            if (units2.Count > 0 && !secondaryGuns[j].isDestroyed)
+            {
+                int minDefense = 10;
+                Unit temp = units2[0];
+                foreach (var i in units2)
+                {
+                    if (i.disabled == 1 || i.disabled == 2)
+                    {
+                        temp = i;
+                        break;
+                    }
+                    if (i.defense < minDefense)
+                    {
+                        minDefense = i.defense;
+                        temp = i;
+                    }
+                }
+                AttackUnit(temp, j + 2);
+            }
+        }
+        List<Unit> units3 = GetUnitsInMissileRange(position);
+        for (int j = 0; j < missiles.Count; j++)
+        {
+            if (units3.Count > 0 && !missiles[j].isDestroyed && !missiles[j].isUsedMissile)
+            {
+                Unit temp = units3[0];
+                foreach (var i in units3)
+                {
+                    if (i.defense == 0)
+                    {
+                        temp = i;
+                        break;
+                    }else if(i.defense == 3)
+                    {
+                        temp = i;
+                    }
+                }
+                AttackUnit(temp, j + 6);
+            }
+        }
+        isGoingToAttack = false;
+        EndAction();
+    }
+
+    void EndAction()
+    {
+        GameManager.instance.StartNewTurn();
+    }
+
 }

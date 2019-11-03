@@ -203,8 +203,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7401540526129919931}
   - component: {fileID: 916350064}
-  - component: {fileID: 916350063}
   - component: {fileID: 7072237168863841672}
+  - component: {fileID: 916350063}
   m_Layer: 0
   m_Name: Orge
   m_TagString: Orge
@@ -240,6 +240,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.88, y: 1.89, z: 2.28}
   m_Center: {x: 0, y: 0.99, z: 0}
+--- !u!114 &7072237168863841672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7401540526130211419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c32b750fb535a14469035f3c6ea06355, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &916350063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -254,18 +266,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   treadsLeft: 45
   speed: 3
---- !u!114 &7072237168863841672
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7401540526130211419}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c32b750fb535a14469035f3c6ea06355, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  acceptableTotalAttackValueFromUnits: 6
+  isGoingToAttack: 0
 --- !u!1 &7401540526130211421
 GameObject:
   m_ObjectHideFlags: 0

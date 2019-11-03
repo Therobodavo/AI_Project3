@@ -22,7 +22,7 @@ public class AStarPathFindingForOrge : MonoBehaviour
     
     void Start()
     {
-
+        
     }
 
 
@@ -31,9 +31,9 @@ public class AStarPathFindingForOrge : MonoBehaviour
         //Check if reach next path point & Deal with movement
         if (targetPointIndex < pathRecords.Count && targetPointIndex >= 0)
         {
-            transform.position = Vector3.MoveTowards(transform.position, new Vector3(pathRecords[targetPointIndex].x, pathRecords[targetPointIndex].y + 1.0f, pathRecords[targetPointIndex].z), 10.0f * Time.deltaTime);
-            transform.LookAt(new Vector3(pathRecords[targetPointIndex].x, pathRecords[targetPointIndex].y + 1.0f, pathRecords[targetPointIndex].z));
-            if (Vector3.Distance(transform.position, new Vector3(pathRecords[targetPointIndex].x, pathRecords[targetPointIndex].y + 1.0f, pathRecords[targetPointIndex].z)) < 0.01f && targetPointIndex < pathRecords.Count)
+            transform.position = Vector3.MoveTowards(transform.position, new Vector3(pathRecords[targetPointIndex].x, pathRecords[targetPointIndex].y, pathRecords[targetPointIndex].z), 10.0f * Time.deltaTime);
+            transform.LookAt(new Vector3(pathRecords[targetPointIndex].x, pathRecords[targetPointIndex].y, pathRecords[targetPointIndex].z));
+            if (Vector3.Distance(transform.position, new Vector3(pathRecords[targetPointIndex].x, pathRecords[targetPointIndex].y, pathRecords[targetPointIndex].z)) < 0.01f && targetPointIndex < pathRecords.Count)
             {
                 //Debug.Log(targetPointIndex);
                 targetPointIndex++;
@@ -52,7 +52,10 @@ public class AStarPathFindingForOrge : MonoBehaviour
     //Will be called when the Orge reach its current pathfinding target
     public void ReachTarget()
     {
-
+        if (GetComponent<Orge>().isGoingToAttack)
+        {
+            GetComponent<Orge>().Attack(transform.position);
+        }
     }
 
     bool PathFinding(Vector3 startPoint, Vector3 endPoint)
@@ -67,7 +70,7 @@ public class AStarPathFindingForOrge : MonoBehaviour
         endX = (int)GetClosestNode(endPoint).x;
         endY = (int)GetClosestNode(endPoint).y;
         //Debug.Log(GetClosestNode(endPoint));
-        if (endX < 0 || endY < 0 || endX > MapScanner.instance.xNumber || endY > MapScanner.instance.yNumber)
+        if (endX < 0 || endY < 0 || endX >= MapScanner.instance.xNumber || endY >= MapScanner.instance.yNumber)
         {
             Debug.Log("Can't reach end.");
             return false;
@@ -78,8 +81,8 @@ public class AStarPathFindingForOrge : MonoBehaviour
             return false;
         }
 
-        Debug.DrawLine(new Vector3(nodes[startX, startY].position.x, nodes[startX, startY].position.y, nodes[startX, startY].position.z), new Vector3(nodes[startX, startY].position.x, nodes[startX, startY].position.y + 0.5f, nodes[startX, startY].position.z), Color.yellow, 30.0f);
-        Debug.DrawLine(new Vector3(nodes[endX, endY].position.x, nodes[endX, endY].position.y, nodes[endX, endY].position.z), new Vector3(nodes[endX, endY].position.x, nodes[endX, endY].position.y + 0.5f, nodes[endX, endY].position.z), Color.yellow, 30.0f);
+        //Debug.DrawLine(new Vector3(nodes[startX, startY].position.x, nodes[startX, startY].position.y, nodes[startX, startY].position.z), new Vector3(nodes[startX, startY].position.x, nodes[startX, startY].position.y + 0.5f, nodes[startX, startY].position.z), Color.yellow, 30.0f);
+        //Debug.DrawLine(new Vector3(nodes[endX, endY].position.x, nodes[endX, endY].position.y, nodes[endX, endY].position.z), new Vector3(nodes[endX, endY].position.x, nodes[endX, endY].position.y + 0.5f, nodes[endX, endY].position.z), Color.yellow, 30.0f);
 
         Node currentNode = null;
         openList.Clear();
@@ -189,12 +192,12 @@ public class AStarPathFindingForOrge : MonoBehaviour
         }
         pathRecords.Add(targetLocation);
         targetPointIndex = 0;
-        Debug.DrawLine(new Vector3(pathRecords[0].x, pathRecords[0].y, pathRecords[0].z), new Vector3(transform.position.x, transform.position.y, transform.position.z), Color.green, 30.0f);
-        for (int i = 1; i < pathRecords.Count; i++)
-        {
+        //Debug.DrawLine(new Vector3(pathRecords[0].x, pathRecords[0].y, pathRecords[0].z), new Vector3(transform.position.x, transform.position.y, transform.position.z), Color.green, 30.0f);
+        //for (int i = 1; i < pathRecords.Count; i++)
+        //{
             //Debug.Log(pathRecords[i]);
-            Debug.DrawLine(new Vector3(pathRecords[i].x, pathRecords[i].y, pathRecords[i].z), new Vector3(pathRecords[i - 1].x, pathRecords[i - 1].y, pathRecords[i - 1].z), Color.green, 30.0f);
-        }
+            //Debug.DrawLine(new Vector3(pathRecords[i].x, pathRecords[i].y, pathRecords[i].z), new Vector3(pathRecords[i - 1].x, pathRecords[i - 1].y, pathRecords[i - 1].z), Color.green, 30.0f);
+        //}
     }
 
     Vector2 GetClosestNode(Vector3 position)
@@ -273,18 +276,108 @@ public class AStarPathFindingForOrge : MonoBehaviour
         targetPointIndex = -1;
         targetLocation = location;
 
-        canReach = PathFinding(transform.position, location);
-        if (pathRecords.Count > GetComponent<Orge>().speed + 2)
+        canReach = PathFinding(transform.position, targetLocation);
+        if (pathRecords.Count > GetComponent<Orge>().speed + 1)
         {
             canReach = false;
             pathRecords.Clear();
-            pathRecords.Clear();
         }
-        Debug.Log(canReach);
         return canReach;
     }
 
+    public bool CanReachTargetLocation(Vector3 location)
+    {
+        bool canReach;
+        pathRecords.Clear();
+        targetPointIndex = -1;
+        targetLocation = location;
 
+        canReach = PathFinding(transform.position, targetLocation);
+        if (pathRecords.Count > GetComponent<Orge>().speed + 1)
+        {
+            canReach = false;
+        }
+        pathRecords.Clear();
+        return canReach;
+    }
+
+    public int DistanceBetweenTwoPoints(Vector3 a, Vector3 b)
+    {
+        bool canReach;
+        int count = -1;
+        pathRecords.Clear();
+        targetPointIndex = -1;
+
+        canReach = PathFinding(a, b);
+        if (canReach)
+        {
+            count = pathRecords.Count;
+        }
+        pathRecords.Clear();
+        return count;
+    }
+
+    public bool MoveTowardsCommandPost(int distance)
+    {
+        bool canReach;
+        pathRecords.Clear();
+        targetPointIndex = -1;
+        targetLocation = GameManager.instance.commandPost.transform.position;
+
+        canReach = PathFinding(transform.position, targetLocation);
+        if(pathRecords.Count > distance + 1 && canReach)
+        {
+            pathRecords.RemoveRange(distance + 1, pathRecords.Count - (distance + 1));
+        }
+
+        return canReach;
+    }
+
+    public Vector3 EstimatePostion(int distance, Vector3 target)
+    {
+        Vector3 temp = Vector3.zero;
+        bool canReach;
+        pathRecords.Clear();
+        targetPointIndex = -1;
+        targetLocation = target;
+
+        canReach = PathFinding(transform.position, targetLocation);
+        if (pathRecords.Count > distance + 1 && canReach)
+        {
+            pathRecords.RemoveRange(distance + 1, pathRecords.Count - (distance + 1));
+            temp = pathRecords[pathRecords.Count - 1];
+        }
+        pathRecords.Clear();
+        return temp;
+    }
+
+    public void RunAway(int distance, Vector3 target)
+    {
+        Vector3 point = GetClosestNode(transform.position);
+        int minX = ((int)point.x - distance) >= 0 ? ((int)point.x - distance) : 0;
+        int minY = ((int)point.y - distance) >= 0 ? ((int)point.y - distance) : 0;
+        int maxX = ((int)point.x + distance) < MapScanner.instance.xNumber ? ((int)point.x + distance) : (MapScanner.instance.xNumber - 1);
+        int maxY = ((int)point.y + distance) < MapScanner.instance.yNumber ? ((int)point.y + distance) : (MapScanner.instance.yNumber - 1);
+        int minDistance = 100;
+        int minIndexX = 0;
+        int minIndexY = 0;
+        for (int i = minX; i <= maxX; i++)
+        {
+            for(int j = minY; j <= maxY; j++)
+            {
+                if (CanReachTargetLocation(MapScanner.instance.grid[i, j].position))
+                {
+                    if(DistanceBetweenTwoPoints(MapScanner.instance.grid[i, j].position, target) < minDistance)
+                    {
+                        minDistance = DistanceBetweenTwoPoints(MapScanner.instance.grid[i, j].position, target);
+                        minIndexX = i;
+                        minIndexY = j;
+                    }
+                }
+            }
+        }
+        SetLocationAsTarget(MapScanner.instance.grid[minIndexX, minIndexY].position);
+    }
 
     bool IsInclude(float a, float b, float c)
     {
@@ -323,4 +416,6 @@ public class AStarPathFindingForOrge : MonoBehaviour
         }
         return temp;
     }
+
+    
 }

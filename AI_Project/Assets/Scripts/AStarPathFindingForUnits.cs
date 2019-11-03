@@ -31,9 +31,9 @@ public class AStarPathFindingForUnits : MonoBehaviour
         
         if (targetPointIndex < pathRecords.Count && targetPointIndex >= 0)
         {
-            transform.position = Vector3.MoveTowards(transform.position, new Vector3(pathRecords[targetPointIndex].x, pathRecords[targetPointIndex].y + 1.0f, pathRecords[targetPointIndex].z), 10.0f * Time.deltaTime);
-            transform.LookAt(new Vector3(pathRecords[targetPointIndex].x, pathRecords[targetPointIndex].y + 1.0f, pathRecords[targetPointIndex].z));
-            if (Vector3.Distance(transform.position, new Vector3(pathRecords[targetPointIndex].x, pathRecords[targetPointIndex].y + 1.0f, pathRecords[targetPointIndex].z)) < 0.01f && targetPointIndex < pathRecords.Count)
+            transform.position = Vector3.MoveTowards(transform.position, new Vector3(pathRecords[targetPointIndex].x, pathRecords[targetPointIndex].y, pathRecords[targetPointIndex].z), 10.0f * Time.deltaTime);
+            transform.LookAt(new Vector3(pathRecords[targetPointIndex].x, pathRecords[targetPointIndex].y, pathRecords[targetPointIndex].z));
+            if (Vector3.Distance(transform.position, new Vector3(pathRecords[targetPointIndex].x, pathRecords[targetPointIndex].y, pathRecords[targetPointIndex].z)) < 0.01f && targetPointIndex < pathRecords.Count)
             {
                 //Debug.Log(targetPointIndex);
                 targetPointIndex++;
@@ -81,8 +81,8 @@ public class AStarPathFindingForUnits : MonoBehaviour
             return false;
         }
 
-        Debug.DrawLine(new Vector3(nodes[startX, startY].position.x, nodes[startX, startY].position.y, nodes[startX, startY].position.z), new Vector3(nodes[startX, startY].position.x, nodes[startX, startY].position.y + 0.5f, nodes[startX, startY].position.z), Color.yellow, 30.0f);
-        Debug.DrawLine(new Vector3(nodes[endX, endY].position.x, nodes[endX, endY].position.y, nodes[endX, endY].position.z), new Vector3(nodes[endX, endY].position.x, nodes[endX, endY].position.y + 0.5f, nodes[endX, endY].position.z), Color.yellow, 30.0f);
+        //Debug.DrawLine(new Vector3(nodes[startX, startY].position.x, nodes[startX, startY].position.y, nodes[startX, startY].position.z), new Vector3(nodes[startX, startY].position.x, nodes[startX, startY].position.y + 0.5f, nodes[startX, startY].position.z), Color.yellow, 30.0f);
+        //Debug.DrawLine(new Vector3(nodes[endX, endY].position.x, nodes[endX, endY].position.y, nodes[endX, endY].position.z), new Vector3(nodes[endX, endY].position.x, nodes[endX, endY].position.y + 0.5f, nodes[endX, endY].position.z), Color.yellow, 30.0f);
 
         Node currentNode = null;
         openList.Clear();
@@ -192,12 +192,12 @@ public class AStarPathFindingForUnits : MonoBehaviour
         }
         pathRecords.Add(targetLocation);
         targetPointIndex = 0;
-        Debug.DrawLine(new Vector3(pathRecords[0].x, pathRecords[0].y, pathRecords[0].z), new Vector3(transform.position.x, transform.position.y, transform.position.z), Color.green, 30.0f);
-        for (int i = 1; i < pathRecords.Count; i++)
-        {
+        //Debug.DrawLine(new Vector3(pathRecords[0].x, pathRecords[0].y, pathRecords[0].z), new Vector3(transform.position.x, transform.position.y, transform.position.z), Color.green, 30.0f);
+        //for (int i = 1; i < pathRecords.Count; i++)
+        //{
             //Debug.Log(pathRecords[i]);
-            Debug.DrawLine(new Vector3(pathRecords[i].x, pathRecords[i].y, pathRecords[i].z), new Vector3(pathRecords[i - 1].x, pathRecords[i - 1].y, pathRecords[i - 1].z), Color.green, 30.0f);
-        }
+            //Debug.DrawLine(new Vector3(pathRecords[i].x, pathRecords[i].y, pathRecords[i].z), new Vector3(pathRecords[i - 1].x, pathRecords[i - 1].y, pathRecords[i - 1].z), Color.green, 30.0f);
+        //}
     }
 
     Vector2 GetClosestNode(Vector3 position)

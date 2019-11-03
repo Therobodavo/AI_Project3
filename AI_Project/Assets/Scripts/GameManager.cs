@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -46,8 +47,12 @@ public class GameManager : MonoBehaviour
     public GameObject destroyFX;
     public GameObject explosionFX;
 
+    public GameObject winPanel;
+    public GameObject losePanel;
+
     [HideInInspector]public State state;
     [HideInInspector]public int turnNumber = 0;
+    [HideInInspector]public GameObject commandPost;
 
     //the chosen unit
     private GameObject chooseUnit;
@@ -86,6 +91,8 @@ public class GameManager : MonoBehaviour
         missileButtons[1].GetComponent<Button>().onClick.AddListener(delegate () { this.AimWeapon(7); });
         treadButton.GetComponent<Button>().onClick.AddListener(delegate () { this.AimWeapon(8); });
         nextTurn.onClick.AddListener(EndTurn);
+        winPanel.SetActive(false);
+        losePanel.SetActive(false);
         SetUp();
         #endregion
     }
@@ -97,6 +104,10 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.T) && turnNumber > 0)
         {
             SwitchCamera();
+        }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ExitGame();
         }
         #region WhenPlayerClick
         if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
@@ -326,18 +337,19 @@ public class GameManager : MonoBehaviour
         }
         Unit[] units = FindObjectsOfType<Unit>();
         int attack = 0;
-        foreach(var i in units)
+        int target = chooseUnit.GetComponent<Unit>().target;
+        foreach (var i in units)
         {
-            if(i.target == chooseUnit.GetComponent<Unit>().target)
+            if(i.target == target && !i.isAttacked && i.disabled == 0)
             {
                 attack += i.attack;
                 i.isAttacked = true;
+                i.target = 0;
             }
         }
-        Debug.Log(chooseUnit.GetComponent<Unit>().target.ToString() + " " + attack.ToString());
         //Calculate Combat
-        int combatResult;
-        if (chooseUnit.GetComponent<Unit>().target == 1)
+        int combatResult = 0;
+        if (target == 1)
         {
             combatResult = CalculateCombat(attack, orge.GetComponent<Orge>().mainGun.defense);
             if(combatResult == 2)
@@ -350,33 +362,33 @@ public class GameManager : MonoBehaviour
                 Instantiate(explosionFX, orge.transform.position, orge.transform.rotation);
             }
         }
-        else if (chooseUnit.GetComponent<Unit>().target >= 2 && chooseUnit.GetComponent<Unit>().target <= 5)
+        else if (target >= 2 && target <= 5)
         {
-            combatResult = CalculateCombat(attack, orge.GetComponent<Orge>().secondaryGuns[chooseUnit.GetComponent<Unit>().target - 2].defense);
+            combatResult = CalculateCombat(attack, orge.GetComponent<Orge>().secondaryGuns[target - 2].defense);
             if (combatResult == 2)
             {
                 Instantiate(destroyFX, orge.transform.position, orge.transform.rotation);
-                orge.GetComponent<Orge>().secondaryGuns[chooseUnit.GetComponent<Unit>().target - 2].isDestroyed = true;
+                orge.GetComponent<Orge>().secondaryGuns[target - 2].isDestroyed = true;
             }
             else
             {
                 Instantiate(explosionFX, orge.transform.position, orge.transform.rotation);
             }
         }
-        else if (chooseUnit.GetComponent<Unit>().target == 6 || chooseUnit.GetComponent<Unit>().target == 7)
+        else if (target == 6 || target == 7)
         {
-            combatResult = CalculateCombat(attack, orge.GetComponent<Orge>().missiles[chooseUnit.GetComponent<Unit>().target - 6].defense);
+            combatResult = CalculateCombat(attack, orge.GetComponent<Orge>().missiles[target - 6].defense);
             if (combatResult == 2)
             {
                 Instantiate(destroyFX, orge.transform.position, orge.transform.rotation);
-                orge.GetComponent<Orge>().missiles[chooseUnit.GetComponent<Unit>().target - 6].isDestroyed = true;
+                orge.GetComponent<Orge>().missiles[target - 6].isDestroyed = true;
             }
             else
             {
                 Instantiate(explosionFX, orge.transform.position, orge.transform.rotation);
             }
         }
-        else if (chooseUnit.GetComponent<Unit>().target == 8)
+        else if (target == 8)
         {
             combatResult = CalculateCombat(1, 1);
             if(combatResult == 2)
@@ -389,6 +401,8 @@ public class GameManager : MonoBehaviour
                 Instantiate(explosionFX, orge.transform.position, orge.transform.rotation);
             }
         }
+
+        //Debug.Log(target.ToString() + " " + attack.ToString() + " " + combatResult.ToString());
         orge.GetComponent<Orge>().UpdateOrgeInfo();
         choosePanel.SetActive(false);
     }
@@ -435,9 +449,13 @@ public class GameManager : MonoBehaviour
     //Call this function to end current turn
     void EndTurn()
     {
+        if(state == State.WaitForOrge)
+        {
+            return;
+        }
         state = State.WaitForOrge;
 
-        StartNewTurn();
+        orge.GetComponent<Orge>().AIDecision();
     }
 
     //Call this function to start a new turn(should be called by Orge)
@@ -485,6 +503,9 @@ public class GameManager : MonoBehaviour
         turnNumber = 1;
         turnText.text = "Turn: " + turnNumber.ToString();
         UpdateOrgeInfo(1, 4, 2, 45, 3);
+        commandPost = GameObject.FindGameObjectWithTag("CommandPost");
+        orge.SetActive(true);
+        orge.GetComponent<Orge>().ChooseSpawnLocation();
     }
 
     //Update the information of Orge to UI
@@ -562,6 +583,8 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Win");
         //Do something when win
+        winPanel.SetActive(true);
+        Time.timeScale = 0;
     }
 
     //Call this method when player loses
@@ -569,6 +592,8 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Lose");
         //Do something when lose
+        losePanel.SetActive(true);
+        Time.timeScale = 0;
     }
 
     //Use this method to handle the combat calculate
@@ -576,7 +601,7 @@ public class GameManager : MonoBehaviour
     public int CalculateCombat(int attack, int defense)
     {
         int dieRoll = (int)Random.Range(1, 7);
-        if(defense == 0)
+        if (defense == 0)
         {
             return 2;
         }
@@ -599,7 +624,7 @@ public class GameManager : MonoBehaviour
                 return 2;
             }
         }
-        else if (attack == defense)
+        else if (attack / defense == 1)
         {
             if (dieRoll <= 2)
             {
@@ -655,5 +680,30 @@ public class GameManager : MonoBehaviour
         {
             return 2;
         }
+    }
+
+    public bool IsBlockedBetweenTwoPoints(Vector3 a, Vector3 b)
+    {
+        RaycastHit temp;
+        bool isBlocked = false;
+        if (Physics.Linecast(a, b, out temp))
+        {
+            if (temp.collider.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
+            {
+                isBlocked = true;
+            }
+        }
+        return isBlocked;
+    }
+
+    public void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Time.timeScale = 1;
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
     }
 }
