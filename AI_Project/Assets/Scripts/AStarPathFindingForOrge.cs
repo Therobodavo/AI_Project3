@@ -28,18 +28,6 @@ public class AStarPathFindingForOrge : MonoBehaviour
 
     void Update()
     {
-        if (targetFound == null)
-        {
-            targetFound = GameObject.FindGameObjectWithTag("CommandPost");
-            if (targetFound != null)
-            {
-                SetLocationAsTarget(targetFound.transform.position);
-                Debug.Log("Found");
-            }
-        }
-
-
-
         //Check if reach next path point & Deal with movement
         if (targetPointIndex < pathRecords.Count && targetPointIndex >= 0)
         {

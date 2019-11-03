@@ -23,6 +23,7 @@ public class Orge : MonoBehaviour
     void Update()
     {
         //About how to detect units: Use FindObjectsOfTypes or OverlapSphere or etc
+
     }
 
     //Set the attack/range/defense of the weapons of Orge

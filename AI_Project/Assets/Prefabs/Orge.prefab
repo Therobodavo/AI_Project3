@@ -204,6 +204,7 @@ GameObject:
   - component: {fileID: 7401540526129919931}
   - component: {fileID: 916350064}
   - component: {fileID: 916350063}
+  - component: {fileID: 7072237168863841672}
   m_Layer: 0
   m_Name: Orge
   m_TagString: Orge
@@ -248,7 +249,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 7401540526130211419}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11645d6c336ccda4d9c2a825c4267ce6, type: 3}
+  m_Script: {fileID: 11500000, guid: b9eec3fd90390ea47a6062377b42fc8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  treadsLeft: 45
+  speed: 3
+--- !u!114 &7072237168863841672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7401540526130211419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c32b750fb535a14469035f3c6ea06355, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &7401540526130211421
