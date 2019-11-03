@@ -30,7 +30,7 @@ public class Orge : MonoBehaviour
     void Update()
     {
         //About how to detect units: Use FindObjectsOfTypes or OverlapSphere or etc
-        Debug.Log(remainMovement.ToString() + " " + ramNumber.ToString());
+        //Debug.Log(remainMovement.ToString() + " " + ramNumber.ToString());
 
     }
 
