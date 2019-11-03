@@ -18,8 +18,8 @@ public class AStarPathFindingForOrge : MonoBehaviour
     private int targetPointIndex = -1;
 
     private Vector3 targetLocation;
-
-
+    private GameObject targetFound;
+    
     void Start()
     {
 
@@ -28,6 +28,18 @@ public class AStarPathFindingForOrge : MonoBehaviour
 
     void Update()
     {
+        if (targetFound == null)
+        {
+            targetFound = GameObject.FindGameObjectWithTag("CommandPost");
+            if (targetFound != null)
+            {
+                SetLocationAsTarget(targetFound.transform.position);
+                Debug.Log("Found");
+            }
+        }
+
+
+
         //Check if reach next path point & Deal with movement
         if (targetPointIndex < pathRecords.Count && targetPointIndex >= 0)
         {
@@ -278,7 +290,9 @@ public class AStarPathFindingForOrge : MonoBehaviour
         {
             canReach = false;
             pathRecords.Clear();
+            pathRecords.Clear();
         }
+        Debug.Log(canReach);
         return canReach;
     }
 
