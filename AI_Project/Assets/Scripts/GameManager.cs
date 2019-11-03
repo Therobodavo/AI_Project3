@@ -240,11 +240,12 @@ public class GameManager : MonoBehaviour
                 {
                     RaycastHit temp;
                     bool isBlocked = false;
-                    if (Physics.Linecast(hit.point, chooseUnit.transform.position, out temp))
+                    if (Physics.Linecast(hit.point + new Vector3(0, 1, 0), chooseUnit.transform.position + new Vector3(0, 1, 0), out temp)) 
                     { 
                         if (temp.collider.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
                         {
                             isBlocked = true;
+                            Debug.Log(temp.collider);
                         }
                     }
                     if (hit.collider.tag.Equals("Orge") && Vector3.Distance(hit.point, chooseUnit.transform.position) <= chooseUnit.GetComponent<Unit>().range && (hit.point.y - chooseUnit.transform.position.y) < 4.0f && !isBlocked)
