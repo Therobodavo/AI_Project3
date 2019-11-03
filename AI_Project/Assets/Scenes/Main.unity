@@ -5627,6 +5627,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   treadsLeft: 45
   speed: 3
+--- !u!114 &916350067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916350062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c32b750fb535a14469035f3c6ea06355, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &926786898
 GameObject:
   m_ObjectHideFlags: 0
@@ -14147,6 +14159,10 @@ PrefabInstance:
     - target: {fileID: 7401540526129919931, guid: 8f9cc641fcaf2f849b125a021c4286aa,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 916350063, guid: 8f9cc641fcaf2f849b125a021c4286aa, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

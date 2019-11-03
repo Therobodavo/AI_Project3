@@ -19,10 +19,16 @@ public class AStarPathFindingForOrge : MonoBehaviour
 
     private Vector3 targetLocation;
     private GameObject targetFound;
-    
+
+    private int internalCounter = 0;
+    private GameManager gameManagerScript;
+    private Orge orgeScript;
+
     void Start()
     {
-
+        GameObject manager = GameObject.Find("GameManager");
+        gameManagerScript = manager.GetComponent<GameManager>();
+        orgeScript = GetComponent<Orge>();
     }
 
 
@@ -31,13 +37,13 @@ public class AStarPathFindingForOrge : MonoBehaviour
         if (targetFound == null)
         {
             targetFound = GameObject.FindGameObjectWithTag("CommandPost");
-            if (targetFound != null)
-            {
-                SetLocationAsTarget(targetFound.transform.position);
-                Debug.Log("Found");
-            }
+            
         }
-
+        if (targetFound != null && Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            SetLocationAsTarget(targetFound.transform.position);
+            Debug.Log("Found");
+        }
 
 
         //Check if reach next path point & Deal with movement
@@ -47,13 +53,17 @@ public class AStarPathFindingForOrge : MonoBehaviour
             transform.LookAt(new Vector3(pathRecords[targetPointIndex].x, pathRecords[targetPointIndex].y + 1.0f, pathRecords[targetPointIndex].z));
             if (Vector3.Distance(transform.position, new Vector3(pathRecords[targetPointIndex].x, pathRecords[targetPointIndex].y + 1.0f, pathRecords[targetPointIndex].z)) < 0.01f && targetPointIndex < pathRecords.Count)
             {
-                //Debug.Log(targetPointIndex);
-                targetPointIndex++;
-                if (targetPointIndex == pathRecords.Count)
+                //Currently this means that it will move every turn
+                if (internalCounter < gameManagerScript.turnNumber)
                 {
-                    targetPointIndex = -1;
-                    //Code here if you want to do something when Orge finish movement
-                    ReachTarget();
+                    targetPointIndex += orgeScript.speed;
+                    internalCounter++;
+                    if (targetPointIndex == pathRecords.Count)
+                    {
+                        targetPointIndex = -1;
+                        //Code here if you want to do something when Orge finish movement
+                        ReachTarget();
+                    }
                 }
             }
         }
@@ -286,13 +296,7 @@ public class AStarPathFindingForOrge : MonoBehaviour
         targetLocation = location;
 
         canReach = PathFinding(transform.position, location);
-        if (pathRecords.Count > GetComponent<Orge>().speed + 2)
-        {
-            canReach = false;
-            pathRecords.Clear();
-            pathRecords.Clear();
-        }
-        Debug.Log(canReach);
+
         return canReach;
     }
 
