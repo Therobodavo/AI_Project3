@@ -492,17 +492,29 @@ public class Orge : MonoBehaviour
         {
             int minDefense = 10;
             Unit temp = units[0];
+            List<Unit> u = new List<Unit>();
             foreach (var i in units)
             {
                 if(i.disabled == 1 || i.disabled == 2)
                 {
-                    temp = i;
-                    break;
+                    u.Add(i);
                 }
                 if(i.defense < minDefense)
                 {
                     minDefense = i.defense;
                     temp = i;
+                }
+            }
+            if (u.Count > 0)
+            {
+                int maxDefense = 0;
+                foreach (var i in u)
+                {
+                    if (i.defense > maxDefense)
+                    {
+                        maxDefense = i.defense;
+                        temp = i;
+                    }
                 }
             }
             AttackUnit(temp, 1);
@@ -514,17 +526,29 @@ public class Orge : MonoBehaviour
             {
                 int minDefense = 10;
                 Unit temp = units2[0];
+                List<Unit> u = new List<Unit>();
                 foreach (var i in units2)
                 {
                     if (i.disabled == 1 || i.disabled == 2)
                     {
-                        temp = i;
-                        break;
+                        u.Add(i);
                     }
                     if (i.defense < minDefense)
                     {
                         minDefense = i.defense;
                         temp = i;
+                    }
+                }
+                if (u.Count > 0)
+                {
+                    int maxDefense = 0;
+                    foreach (var i in u)
+                    {
+                        if (i.defense > maxDefense)
+                        {
+                            maxDefense = i.defense;
+                            temp = i;
+                        }
                     }
                 }
                 AttackUnit(temp, j + 2);
