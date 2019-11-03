@@ -260,7 +260,7 @@ public class Orge : MonoBehaviour
                     AttackAfterMove();
                 }
             }
-            else
+            else if(remainMovement >= 1)
             {
                 int seed = Random.Range(0, 2);
                 if (seed == 1)
@@ -273,6 +273,10 @@ public class Orge : MonoBehaviour
                     GetComponent<AStarPathFindingForOrge>().RunAway(remainMovement, GetLocationOfClosestUnit(transform.position));
                     AttackAfterMove();
                 }
+            }
+            else
+            {
+                Attack(transform.position);
             }
         }
         else
