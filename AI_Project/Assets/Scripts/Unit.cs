@@ -10,7 +10,7 @@ public class Unit : MonoBehaviour
     public int movement;
     [HideInInspector] public float currentMovement;//the remaining movement
     [HideInInspector] public bool isAttacked;//is this unit already attacked this turn
-    [HideInInspector] public int disabled;//is this unit disabled(0 = not disabled, 1 = disabled)
+    [HideInInspector] public int disabled;//is this unit disabled(0 = not disabled, 1 = disabled, 2 = disabled but will be activated next turn)
 
     public int target;//1 = MainGun, 2-5 = SecondaryGun1-4, 6-7 = Missile1-2, 8 = Tread
 

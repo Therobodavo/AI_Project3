@@ -447,11 +447,11 @@ public class GameManager : MonoBehaviour
         foreach(var i in units)
         {
             i.ResetState(false);
-            if(i.disabled == 0)
+            if(i.disabled == 1)
             {
                 i.disabled++;
             }
-            else if(i.disabled == 1)
+            else if(i.disabled == 2)
             {
                 i.disabled = 0;
                 i.DestroyDisableFX();

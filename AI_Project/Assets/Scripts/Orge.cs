@@ -81,7 +81,7 @@ public class Orge : MonoBehaviour
                 unit.disabled++;
                 unit.DisableFX();
             }
-            else if(unit.disabled == 1)
+            else if(unit.disabled == 1 || unit.disabled == 2)
             {
                 Instantiate(GameManager.instance.destroyFX, unit.transform.position, unit.transform.rotation);
                 Destroy(unit.gameObject);
