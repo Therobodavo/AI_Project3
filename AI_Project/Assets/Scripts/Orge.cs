@@ -87,10 +87,15 @@ public class Orge : MonoBehaviour
             GameManager.instance.Lose();
             return;
         }
-        if(combatResult == 1)
+        if(combatResult == 0)
+        {
+            Instantiate(GameManager.instance.explosionFX, unit.transform.position, unit.transform.rotation);
+        }
+        else if(combatResult == 1)
         {
             if(unit.disabled == 0)
             {
+                Instantiate(GameManager.instance.explosionFX, unit.transform.position, unit.transform.rotation);
                 unit.disabled++;
                 unit.DisableFX();
             }
@@ -289,8 +294,17 @@ public class Orge : MonoBehaviour
         }
         else
         {
-            GetComponent<AStarPathFindingForOrge>().RunAway(remainMovement, GetLocationOfClosestUnit(transform.position));
-            AttackAfterMove();
+            int seed = Random.Range(0, 100);
+            if (seed >= runAwayWeights)
+            {
+                GetComponent<AStarPathFindingForOrge>().MoveTowardsCommandPost(1);
+                AttackAfterMove();
+            }
+            else
+            {
+                GetComponent<AStarPathFindingForOrge>().RunAway(remainMovement, GetLocationOfClosestUnit(transform.position));
+                AttackAfterMove();
+            }
         }
     }
 

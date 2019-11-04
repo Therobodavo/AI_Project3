@@ -610,89 +610,160 @@ public class GameManager : MonoBehaviour
 
     //Use this method to handle the combat calculate
     //return value: 0 = NE, 1 = D, 2 = X
-    public int CalculateCombat(int attack, int defense)
+    public int CalculateCombat(int atk, int def)
     {
-        int dieRoll = (int)Random.Range(1, 7);
-        if (defense == 0)
+        // roll the die (values from 1 to 6) is the row of the array
+        int roll = (int)Random.Range(1, 7);
+        int[,] results = { { 0, 0, 0, 0, 1 },
+                           { 0, 0, 1, 1, 2 },
+                           { 0, 1, 1, 2, 2 },
+                           { 0, 1, 2, 2, 2 },
+                           { 1, 2, 2, 2, 2 },
+                           { 2, 2, 2, 2, 2 }};
+        // special cases
+        if (atk == 0)
         {
-            return 2;
+            return 0; // no attack, no damage
         }
-        else if ((float)(attack / defense) < 0.5f)
+
+        if (def == 0)
         {
-            return 0;
+            return 2; // no defense, automatic destruction
         }
-        else if (defense / attack == 2)
+
+        // get ratio of attacker to defender
+        if (atk > def)
         {
-            if(dieRoll <= 4)
-            {
-                return 0;
-            }
-            else if(dieRoll == 5)
-            {
-                return 1;
-            }
-            else
-            {
-                return 2;
-            }
+            atk = atk / def;
+            def = 1;
         }
-        else if (attack / defense == 1)
+        else if (atk < def)
         {
-            if (dieRoll <= 2)
-            {
-                return 0;
-            }
-            else if (dieRoll <= 4)
-            {
-                return 1;
-            }
-            else
-            {
-                return 2;
-            }
-        }
-        else if (attack / defense == 2)
-        {
-            if (dieRoll == 1)
-            {
-                return 0;
-            }
-            else if (dieRoll <= 3)
-            {
-                return 1;
-            }
-            else
-            {
-                return 2;
-            }
-        }
-        else if (attack / defense == 3)
-        {
-            if (dieRoll <= 2)
-            {
-                return 1;
-            }
-            else
-            {
-                return 2;
-            }
-        }
-        else if (attack / defense == 4)
-        {
-            if (dieRoll == 1)
-            {
-                return 1;
-            }
-            else
-            {
-                return 2;
-            }
+            def = def / atk;
+            atk = 1;
         }
         else
         {
-            return 2;
+            def = 1;
+            atk = 1;
         }
+
+        // debug
+        //Console.WriteLine("Combat Ratio: " + atk + "-" + def);
+
+        // a couple more special cases
+        if (atk == 1 && def > 2)
+        {
+            return 0; // attack is too wimpy, no effect
+        }
+
+        if (atk > 4 && def == 1)
+        {
+            return 2; // overpowering attack, defender destroyed
+        }
+
+        // otherwise figure out the column to use
+        int col = -1;
+        if (atk == 1 && def == 2) col = 0;
+        if (atk == 1 && def == 1) col = 1;
+        if (atk == 2 && def == 1) col = 2;
+        if (atk == 3 && def == 1) col = 3;
+        if (atk == 4 && def == 1) col = 4;
+
+        
+        // debug
+        //Console.WriteLine("Using col: " + col);
+        //Console.WriteLine(" and roll: " + roll);
+        //Console.WriteLine(" gives " + results[roll - 1, col]);
+
+        return results[roll - 1, col];
+
     }
+    #region FormerMethod
+    //public int CalculateCombat(int attack, int defense)
+    //{
+    //    int dieRoll = (int)Random.Range(1, 7);
+    //    if (defense == 0)
+    //    {
+    //        return 2;
+    //    }
+    //    else if ((float)(attack / defense) < 0.5f)
+    //    {
+    //        return 0;
+    //    }
+    //    else if (defense / attack == 2)
+    //    {
+    //        if(dieRoll <= 4)
+    //        {
+    //            return 0;
+    //        }
+    //        else if(dieRoll == 5)
+    //        {
+    //            return 1;
+    //        }
+    //        else
+    //        {
+    //            return 2;
+    //        }
+    //    }
+    //    else if (attack / defense == 1)
+    //    {
+    //        if (dieRoll <= 2)
+    //        {
+    //            return 0;
+    //        }
+    //        else if (dieRoll <= 4)
+    //        {
+    //            return 1;
+    //        }
+    //        else
+    //        {
+    //            return 2;
+    //        }
+    //    }
+    //    else if (attack / defense == 2)
+    //    {
+    //        if (dieRoll == 1)
+    //        {
+    //            return 0;
+    //        }
+    //        else if (dieRoll <= 3)
+    //        {
+    //            return 1;
+    //        }
+    //        else
+    //        {
+    //            return 2;
+    //        }
+    //    }
+    //    else if (attack / defense == 3)
+    //    {
+    //        if (dieRoll <= 2)
+    //        {
+    //            return 1;
+    //        }
+    //        else
+    //        {
+    //            return 2;
+    //        }
+    //    }
+    //    else if (attack / defense == 4)
+    //    {
+    //        if (dieRoll == 1)
+    //        {
+    //            return 1;
+    //        }
+    //        else
+    //        {
+    //            return 2;
+    //        }
+    //    }
+    //    else
+    //    {
+    //        return 2;
+    //    }
+    //}
+    #endregion
 
     public bool IsBlockedBetweenTwoPoints(Vector3 a, Vector3 b)
     {
