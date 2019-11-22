@@ -139,7 +139,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attack: 6
-  range: 8
+  range: 16
   defense: 1
   movement: 0
   currentMovement: 0

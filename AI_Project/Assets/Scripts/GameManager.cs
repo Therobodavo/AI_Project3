@@ -131,7 +131,41 @@ public class GameManager : MonoBehaviour
                         {
                             choosePanel.SetActive(true);
                             moveButton.SetActive(true);
-                            rammingButton.SetActive(true);
+                            RaycastHit temp;
+                            bool isBlocked = false;
+                            if (Physics.Linecast(GameManager.instance.orge.transform.position + new Vector3(0, 1, 0), chooseUnit.transform.position + new Vector3(0, 1, 0), out temp))
+                            {
+                                if (temp.collider.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
+                                {
+                                    isBlocked = true;
+                                    Debug.Log(temp.collider);
+                                }
+                            }
+                            if (Vector3.Distance(GameManager.instance.orge.transform.position, chooseUnit.transform.position) <= chooseUnit.GetComponent<Unit>().range && (GameManager.instance.orge.transform.position.y - chooseUnit.transform.position.y) < 4.0f && !isBlocked)
+                            {
+                                aimButton.SetActive(true);
+                            }
+                            else
+                            {
+                                aimButton.SetActive(false);
+                            }
+                            if (Vector3.Distance(GameManager.instance.orge.transform.position, chooseUnit.transform.position) <= chooseUnit.GetComponent<Unit>().currentMovement)
+                            {
+                                bool canReach = chooseUnit.GetComponent<AStarPathFindingForUnits>().CanReachLocation(GameManager.instance.orge.transform.position);
+                                if (canReach)
+                                {
+                                    rammingButton.SetActive(true);
+                                    //Debug.Log("Ramming");
+                                }
+                                else
+                                {
+                                    rammingButton.SetActive(false);
+                                }
+                            }
+                            else
+                            {
+                                rammingButton.SetActive(false);
+                            }
                         }
                         state = State.Selected;
                     }
@@ -147,7 +181,41 @@ public class GameManager : MonoBehaviour
                         {
                             choosePanel.SetActive(true);
                             moveButton.SetActive(true);
-                            rammingButton.SetActive(true);
+                            RaycastHit temp;
+                            bool isBlocked = false;
+                            if (Physics.Linecast(GameManager.instance.orge.transform.position + new Vector3(0, 1, 0), chooseUnit.transform.position + new Vector3(0, 1, 0), out temp))
+                            {
+                                if (temp.collider.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
+                                {
+                                    isBlocked = true;
+                                    Debug.Log(temp.collider);
+                                }
+                            }
+                            if (Vector3.Distance(GameManager.instance.orge.transform.position, chooseUnit.transform.position) <= chooseUnit.GetComponent<Unit>().range && (GameManager.instance.orge.transform.position.y - chooseUnit.transform.position.y) < 4.0f && !isBlocked)
+                            {
+                                aimButton.SetActive(true);
+                            }
+                            else
+                            {
+                                aimButton.SetActive(false);
+                            }
+                            if (Vector3.Distance(GameManager.instance.orge.transform.position, chooseUnit.transform.position) <= chooseUnit.GetComponent<Unit>().currentMovement)
+                            {
+                                bool canReach = chooseUnit.GetComponent<AStarPathFindingForUnits>().CanReachLocation(GameManager.instance.orge.transform.position);
+                                if (canReach)
+                                {
+                                    rammingButton.SetActive(true);
+                                    //Debug.Log("Ramming");
+                                }
+                                else
+                                {
+                                    rammingButton.SetActive(false);
+                                }
+                            }
+                            else
+                            {
+                                rammingButton.SetActive(false);
+                            }
                         }
                         state = State.Selected;
                     }
@@ -162,6 +230,24 @@ public class GameManager : MonoBehaviour
                         {
                             choosePanel.SetActive(true);
                             moveButton.SetActive(false);
+                            RaycastHit temp;
+                            bool isBlocked = false;
+                            if (Physics.Linecast(GameManager.instance.orge.transform.position + new Vector3(0, 1, 0), chooseUnit.transform.position + new Vector3(0, 1, 0), out temp))
+                            {
+                                if (temp.collider.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
+                                {
+                                    isBlocked = true;
+                                    Debug.Log(temp.collider);
+                                }
+                            }
+                            if (Vector3.Distance(GameManager.instance.orge.transform.position, chooseUnit.transform.position) <= chooseUnit.GetComponent<Unit>().range && (GameManager.instance.orge.transform.position.y - chooseUnit.transform.position.y) < 4.0f && !isBlocked)
+                            {
+                                aimButton.SetActive(true);
+                            }
+                            else
+                            {
+                                aimButton.SetActive(false);
+                            }
                             rammingButton.SetActive(false);
                         }
                         state = State.Selected;
@@ -171,7 +257,23 @@ public class GameManager : MonoBehaviour
                         chooseUnit = hit.collider.gameObject;
                         choosePanel.SetActive(true);
                         moveButton.SetActive(true);
-                        rammingButton.SetActive(true);
+                        if (Vector3.Distance(GameManager.instance.orge.transform.position, chooseUnit.transform.position) <= chooseUnit.GetComponent<Unit>().currentMovement)
+                        {
+                            bool canReach = chooseUnit.GetComponent<AStarPathFindingForUnits>().CanReachLocation(GameManager.instance.orge.transform.position);
+                            if (canReach)
+                            {
+                                rammingButton.SetActive(true);
+                                //Debug.Log("Ramming");
+                            }
+                            else
+                            {
+                                rammingButton.SetActive(false);
+                            }
+                        }
+                        else
+                        {
+                            rammingButton.SetActive(false);
+                        }
                         if (chooseUnit.GetComponent<Unit>().isAttacked)
                         {
                             attackButton.SetActive(false);
@@ -180,7 +282,24 @@ public class GameManager : MonoBehaviour
                         else
                         {
                             attackButton.SetActive(true);
-                            aimButton.SetActive(true);
+                            RaycastHit temp;
+                            bool isBlocked = false;
+                            if (Physics.Linecast(GameManager.instance.orge.transform.position + new Vector3(0, 1, 0), chooseUnit.transform.position + new Vector3(0, 1, 0), out temp))
+                            {
+                                if (temp.collider.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
+                                {
+                                    isBlocked = true;
+                                    Debug.Log(temp.collider);
+                                }
+                            }
+                            if (Vector3.Distance(GameManager.instance.orge.transform.position, chooseUnit.transform.position) <= chooseUnit.GetComponent<Unit>().range && (GameManager.instance.orge.transform.position.y - chooseUnit.transform.position.y) < 4.0f && !isBlocked)
+                            {
+                                aimButton.SetActive(true);
+                            }
+                            else
+                            {
+                                aimButton.SetActive(false);
+                            }
                         }
                         state = State.Selected;
                     }
@@ -238,62 +357,65 @@ public class GameManager : MonoBehaviour
                 #region When player want to choose a target to aim
                 if (state == State.Aiming)
                 {
-                    RaycastHit temp;
-                    bool isBlocked = false;
-                    if (Physics.Linecast(hit.point + new Vector3(0, 1, 0), chooseUnit.transform.position + new Vector3(0, 1, 0), out temp)) 
-                    { 
-                        if (temp.collider.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
-                        {
-                            isBlocked = true;
-                            Debug.Log(temp.collider);
-                        }
-                    }
-                    if (hit.collider.tag.Equals("Orge") && Vector3.Distance(hit.point, chooseUnit.transform.position) <= chooseUnit.GetComponent<Unit>().range && (hit.point.y - chooseUnit.transform.position.y) < 4.0f && !isBlocked)
-                    {
-                        attackPanel.SetActive(true);
-                        HandleAttackPanel();
-                        attackPanel.transform.position = Input.mousePosition;
-                        ClearCircle(chooseUnit.transform);
-                    }
-                    else
-                    {
-                        errorPrefab.SetActive(true);
-                        errorPrefab.transform.position = Input.mousePosition;
-                        attackPanel.SetActive(false);
-                        Invoke("HideErrorPrefab", 0.5f);
-                        ClearCircle(chooseUnit.transform);
-                        state = State.Idle;
-                        chooseUnit = null;
-                    }
+                    //RaycastHit temp;
+                    //bool isBlocked = false;
+                    //if (Physics.Linecast(hit.point + new Vector3(0, 1, 0), chooseUnit.transform.position + new Vector3(0, 1, 0), out temp)) 
+                    //{ 
+                    //    if (temp.collider.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
+                    //    {
+                    //        isBlocked = true;
+                    //        Debug.Log(temp.collider);
+                    //    }
+                    //}
+                    //if (hit.collider.tag.Equals("Orge") && Vector3.Distance(hit.point, chooseUnit.transform.position) <= chooseUnit.GetComponent<Unit>().range && (hit.point.y - chooseUnit.transform.position.y) < 4.0f && !isBlocked)
+                    //{
+                    //    attackPanel.SetActive(true);
+                    //    HandleAttackPanel();
+                    //    attackPanel.transform.position = Input.mousePosition;
+                    //    ClearCircle(chooseUnit.transform);
+                    //}
+                    //else
+                    //{
+                    //    errorPrefab.SetActive(true);
+                    //    errorPrefab.transform.position = Input.mousePosition;
+                    //    attackPanel.SetActive(false);
+                    //    Invoke("HideErrorPrefab", 0.5f);
+                    //    ClearCircle(chooseUnit.transform);
+                    //    state = State.Idle;
+                    //    chooseUnit = null;
+                    //}
+                    state = State.Idle;
+                    chooseUnit = null;
                 }
                 #endregion
                 #region When player want to choose a target to ram
                 if (state == State.Ramming)
                 {
-                    if (hit.collider.tag.Equals("Orge") && Vector3.Distance(hit.point, chooseUnit.transform.position) <= chooseUnit.GetComponent<Unit>().currentMovement)
-                    {
-                        bool canReach = chooseUnit.GetComponent<AStarPathFindingForUnits>().SetLocationAsTarget(hit.point);
-                        if (canReach)
-                        {
-                            Debug.Log("Ramming");
-                        }
-                        else
-                        {
-                            errorPrefab.SetActive(true);
-                            errorPrefab.transform.position = Input.mousePosition;
-                            Invoke("HideErrorPrefab", 0.5f);
-                            state = State.Idle;
-                        }
-                    }
-                    else
-                    {
-                        errorPrefab.SetActive(true);
-                        errorPrefab.transform.position = Input.mousePosition;
-                        Invoke("HideErrorPrefab", 0.5f);
-                        state = State.Idle;
-                    }
-                    ClearCircle(chooseUnit.transform);
-                    chooseUnit = null;
+                    //if (hit.collider.tag.Equals("Orge") && Vector3.Distance(hit.point, chooseUnit.transform.position) <= chooseUnit.GetComponent<Unit>().currentMovement)
+                    //{
+                    //    bool canReach = chooseUnit.GetComponent<AStarPathFindingForUnits>().SetLocationAsTarget(hit.point);
+                    //    if (canReach)
+                    //    {
+                    //        Debug.Log("Ramming");
+                    //    }
+                    //    else
+                    //    {
+                    //        errorPrefab.SetActive(true);
+                    //        errorPrefab.transform.position = Input.mousePosition;
+                    //        Invoke("HideErrorPrefab", 0.5f);
+                    //        state = State.Idle;
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    errorPrefab.SetActive(true);
+                    //    errorPrefab.transform.position = Input.mousePosition;
+                    //    Invoke("HideErrorPrefab", 0.5f);
+                    //    state = State.Idle;
+                    //}
+                    //ClearCircle(chooseUnit.transform);
+                    //chooseUnit = null;
+                    //state = State.Idle;
                 }
                 #endregion
             }
@@ -317,8 +439,9 @@ public class GameManager : MonoBehaviour
     //Hide choose panel and allow player to choose a ramming target
     private void ChooseRamTarget()
     {
+        chooseUnit.GetComponent<AStarPathFindingForUnits>().SetLocationAsTarget(GameManager.instance.orge.transform.position);
         state = State.Ramming;
-        DrawCircle(chooseUnit.transform, chooseUnit.transform.position, chooseUnit.GetComponent<Unit>().currentMovement);
+        //DrawCircle(chooseUnit.transform, chooseUnit.transform.position, chooseUnit.GetComponent<Unit>().currentMovement);
         choosePanel.SetActive(false);
     }
 
@@ -326,7 +449,10 @@ public class GameManager : MonoBehaviour
     private void ChooseAimTarget()
     {
         state = State.Aiming;
-        DrawCircle(chooseUnit.transform, chooseUnit.transform.position, chooseUnit.GetComponent<Unit>().range);
+        HandleAttackPanel();
+        attackPanel.SetActive(true);
+        attackPanel.transform.position = Camera.main.WorldToScreenPoint(GameManager.instance.orge.transform.position);
+        //DrawCircle(chooseUnit.transform, chooseUnit.transform.position, chooseUnit.GetComponent<Unit>().range);
         choosePanel.SetActive(false);
     }
 

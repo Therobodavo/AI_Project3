@@ -49,6 +49,7 @@ public class AStarPathFindingForUnits : MonoBehaviour
                     {
                         GameManager.instance.state = GameManager.State.Idle;
                         GameManager.instance.orge.GetComponent<Orge>().LoseTreads(1);
+                        Instantiate(GameManager.instance.destroyFX, GameManager.instance.orge.transform.position, GameManager.instance.orge.transform.rotation);
                         Destroy(this.gameObject);
                     }
                 }
@@ -282,7 +283,21 @@ public class AStarPathFindingForUnits : MonoBehaviour
         return canReach;
     }
 
-    
+    public bool CanReachLocation(Vector3 location)
+    {
+        bool canReach;
+        pathRecords.Clear();
+        targetPointIndex = -1;
+        targetLocation = location;
+
+        canReach = PathFinding(transform.position, location);
+        if (pathRecords.Count > GetComponent<Unit>().currentMovement + 2)
+        {
+            canReach = false;
+        }
+        pathRecords.Clear();
+        return canReach;
+    }
 
     bool IsInclude(float a, float b, float c)
     {

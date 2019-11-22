@@ -265,9 +265,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attack: 3
-  range: 4
+  range: 8
   defense: 2
-  movement: 2
+  movement: 4
   currentMovement: 0
   isAttacked: 0
   disabled: 0
