@@ -11,6 +11,7 @@ TagManager:
   - Howitzer
   - GEV
   - Orge
+  - Influence
   layers:
   - Default
   - TransparentFX
