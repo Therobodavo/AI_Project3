@@ -430,7 +430,7 @@ GameObject:
   - component: {fileID: 5193460541238290551}
   - component: {fileID: 8950037235681507997}
   - component: {fileID: 1160670380086973035}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Influence
   m_TagString: Untagged
   m_Icon: {fileID: 0}

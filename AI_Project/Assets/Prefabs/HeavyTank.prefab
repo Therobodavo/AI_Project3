@@ -443,7 +443,7 @@ GameObject:
   - component: {fileID: 3858848492500920468}
   - component: {fileID: 3477965714216048983}
   - component: {fileID: 474056078163309107}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Influence
   m_TagString: Untagged
   m_Icon: {fileID: 0}

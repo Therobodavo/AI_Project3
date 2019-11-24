@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3720216690861275887}
   - component: {fileID: 8541077424275565064}
   - component: {fileID: 356570908759149993}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Influence
   m_TagString: Untagged
   m_Icon: {fileID: 0}
