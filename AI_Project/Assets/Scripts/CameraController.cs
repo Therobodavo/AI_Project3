@@ -7,8 +7,10 @@ public class CameraController : MonoBehaviour
     public float moveSpeed;
     public GameObject helper;
     public GameObject openHelper;
-
     private bool isHelperOpen;
+    private float zoomSpeed = 15f;
+    private float minZoom = 10f;
+    private float maxZoom = 70f;
     void Start()
     {
         //isHelperOpen = false;
@@ -33,6 +35,26 @@ public class CameraController : MonoBehaviour
         //        helper.SetActive(true);
         //    }
         //}
+
+        //If Q is pressed or scroll wheel moved, lower camera size
+        if (Input.GetKey(KeyCode.Q) || Input.GetAxis("Mouse ScrollWheel") > 0f)
+        {
+            Camera.main.orthographicSize -= zoomSpeed/8;
+            if(Camera.main.orthographicSize < minZoom)
+            {
+                Camera.main.orthographicSize = minZoom;
+            }
+        }
+
+        //If E is pressed or scroll wheel moved, raise camera size
+        if (Input.GetKey(KeyCode.E) || Input.GetAxis("Mouse ScrollWheel") < 0f)
+        {
+            Camera.main.orthographicSize += zoomSpeed/8;
+            if(Camera.main.orthographicSize > maxZoom)
+            {
+                Camera.main.orthographicSize = maxZoom;
+            }
+        }
         if (Input.mousePosition.y > Screen.height * 0.95f && Input.mousePosition.y <= Screen.height)
         {
             transform.position = new Vector3(transform.position.x - moveSpeed * Time.deltaTime, transform.position.y, transform.position.z - moveSpeed * Time.deltaTime);
