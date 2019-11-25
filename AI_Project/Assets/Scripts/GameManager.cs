@@ -53,6 +53,8 @@ public class GameManager : MonoBehaviour
     [HideInInspector]public State state;
     [HideInInspector]public int turnNumber = 0;
     [HideInInspector]public GameObject commandPost;
+    [HideInInspector]public bool isTopDown;
+    [HideInInspector]public bool isStarted;
 
     //the chosen unit
     private GameObject chooseUnit;
@@ -644,6 +646,8 @@ public class GameManager : MonoBehaviour
         commandPost = GameObject.FindGameObjectWithTag("CommandPost");
         orge.SetActive(true);
         orge.GetComponent<Orge>().ChooseSpawnLocation();
+        isTopDown = false;
+        isStarted = true;
     }
 
     //Update the information of Orge to UI
@@ -657,6 +661,8 @@ public class GameManager : MonoBehaviour
     {
         mainCamera.SetActive(false);
         setupCamera.SetActive(true);
+        isTopDown = true;
+        isStarted = false;
         setupUI.SetActive(true);
         setupIcons.SetActive(true);
         mainUI.SetActive(false);
@@ -669,12 +675,15 @@ public class GameManager : MonoBehaviour
         {
             mainCamera.SetActive(false);
             setupCamera.SetActive(true);
+            isTopDown = true;
         }
         else
         {
             mainCamera.SetActive(true);
             setupCamera.SetActive(false);
+            isTopDown = false;
         }
+        //Debug.Log(isTopDown);
     }
 
     //Call this method when player choose a target for a unit
