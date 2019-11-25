@@ -605,7 +605,6 @@ public class Orge : MonoBehaviour
         if (c != null && c.tag.Equals("Influence"))
         {
             c.transform.localScale = new Vector3(r, 1, r);
-            c.GetComponent<MeshRenderer>().sortingOrder = 10;
         }
     }
 }
