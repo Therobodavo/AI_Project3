@@ -6,11 +6,12 @@ public class Toggle : MonoBehaviour
 {
 
     public List<GameObject> units = new List<GameObject>();
+    private GameManager manager;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        manager = GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -22,32 +23,35 @@ public class Toggle : MonoBehaviour
 
     void ToggleInfluenceOn ()
     {
-        
-
-        if (Input.GetKeyDown(KeyCode.N))
+        if(manager.isTopDown == true && manager.isStarted == true)
         {
-            AddToList();
-            foreach(GameObject item in units)
+            if (Input.GetKeyDown(KeyCode.N))
             {
-                if(item == null)
+                AddToList();
+                foreach (GameObject item in units)
                 {
-                    units.Remove(item);
-                }
-                else
-                {
-                    item.transform.Find("Influence").gameObject.SetActive(true);
-
-                    if (item.GetComponent<Orge>() != null)
+                    if (item == null)
                     {
-                        item.GetComponent<Orge>().UpdateInfluenceCircle();
+                        units.Remove(item);
                     }
-                    if (item.GetComponent<Unit>() != null)
+                    else
                     {
-                        item.GetComponent<Unit>().UpdateInfluenceCircle();
+                        item.transform.Find("Influence").gameObject.SetActive(true);
+
+                        if (item.GetComponent<Orge>() != null)
+                        {
+                            item.GetComponent<Orge>().UpdateInfluenceCircle();
+                        }
+                        if (item.GetComponent<Unit>() != null)
+                        {
+                            item.GetComponent<Unit>().UpdateInfluenceCircle();
+                        }
                     }
                 }
             }
         }
+
+        
     }
 
     void ToggleInfluenceOff()
