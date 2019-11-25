@@ -19,6 +19,14 @@ public class Toggle : MonoBehaviour
     {
         ToggleInfluenceOn();
         ToggleInfluenceOff();
+        if (manager.isTopDown == false || manager.isStarted == false)
+        {
+            foreach (GameObject item in units)
+            {
+                item.transform.Find("Influence").gameObject.SetActive(false);
+            }
+        }
+
     }
 
     void ToggleInfluenceOn ()
@@ -56,23 +64,24 @@ public class Toggle : MonoBehaviour
 
     void ToggleInfluenceOff()
     {
-
-
-        if (Input.GetKeyDown(KeyCode.M))
+        if (manager.isTopDown == true && manager.isStarted == true)
         {
-            AddToList();
-            foreach (GameObject item in units)
+            if (Input.GetKeyDown(KeyCode.M))
             {
-                if (item == null)
+                AddToList();
+                foreach (GameObject item in units)
                 {
-                    units.Remove(item);
-                }
-                else
-                {
-                    item.transform.Find("Influence").gameObject.SetActive(false);
+                    if (item == null)
+                    {
+                        units.Remove(item);
+                    }
+                    else
+                    {
+                        item.transform.Find("Influence").gameObject.SetActive(false);
+                    }
                 }
             }
-        }
+        }  
     }
 
     void AddToList()

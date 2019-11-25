@@ -10369,6 +10369,8 @@ MonoBehaviour:
   state: 0
   turnNumber: 0
   commandPost: {fileID: 0}
+  isTopDown: 0
+  isStarted: 0
 --- !u!114 &1943574067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11180,7 +11182,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2142445039}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 4, z: 0}
   m_LocalScale: {x: 18, y: 0.25, z: 18}
   m_Children: []
   m_Father: {fileID: 916350066}
