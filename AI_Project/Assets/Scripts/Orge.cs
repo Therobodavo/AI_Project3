@@ -596,5 +596,16 @@ public class Orge : MonoBehaviour
     {
         GameManager.instance.StartNewTurn();
     }
-
+    public void UpdateInfluenceCircle()
+    {
+        float r = remainMovement;
+        r += GetMaxAttackRange();
+        r *= 3;
+        GameObject c = GetComponentInChildren<CapsuleCollider>().gameObject;
+        if (c != null && c.tag.Equals("Influence"))
+        {
+            c.transform.localScale = new Vector3(r, 1, r);
+            c.GetComponent<MeshRenderer>().sortingOrder = 10;
+        }
+    }
 }

@@ -29,7 +29,23 @@ public class Toggle : MonoBehaviour
             AddToList();
             foreach(GameObject item in units)
             {
-                item.transform.Find("Influence").gameObject.SetActive(true);
+                if(item == null)
+                {
+                    units.Remove(item);
+                }
+                else
+                {
+                    item.transform.Find("Influence").gameObject.SetActive(true);
+
+                    if (item.GetComponent<Orge>() != null)
+                    {
+                        item.GetComponent<Orge>().UpdateInfluenceCircle();
+                    }
+                    if (item.GetComponent<Unit>() != null)
+                    {
+                        item.GetComponent<Unit>().UpdateInfluenceCircle();
+                    }
+                }
             }
         }
     }
@@ -43,7 +59,14 @@ public class Toggle : MonoBehaviour
             AddToList();
             foreach (GameObject item in units)
             {
-                item.transform.Find("Influence").gameObject.SetActive(false);
+                if (item == null)
+                {
+                    units.Remove(item);
+                }
+                else
+                {
+                    item.transform.Find("Influence").gameObject.SetActive(false);
+                }
             }
         }
     }

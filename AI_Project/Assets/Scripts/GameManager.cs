@@ -426,6 +426,11 @@ public class GameManager : MonoBehaviour
         {
             choosePanel.transform.position = Camera.main.WorldToScreenPoint(chooseUnit.transform.position);
         }
+        else
+        {
+            attackPanel.SetActive(false);
+            choosePanel.SetActive(false);
+        }
     }
 
     //Hide choose panel and allow player to choose a target location

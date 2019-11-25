@@ -44,5 +44,24 @@ public class Unit : MonoBehaviour
         Destroy(disableFX);
         disableFX = null;
     }
+
+    public void UpdateInfluenceCircle()
+    {
+        float r = currentMovement;
+        if (!isAttacked)
+        {
+            r += range;
+        }
+        if (disabled != 0)
+        {
+            r = 0;
+        }
+        r *= 3;
+        GameObject c = GetComponentInChildren<CapsuleCollider>().gameObject;
+        if(c != null && c.tag.Equals("Influence"))
+        {
+            c.transform.localScale = new Vector3(r, 1, r);
+        }
+    }
 }
 
