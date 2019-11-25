@@ -50,6 +50,10 @@ public class GameManager : MonoBehaviour
     public GameObject winPanel;
     public GameObject losePanel;
 
+    private float zoomSpeed = 15f;
+    private float minZoom = 10f;
+    private float maxZoom = 70f;
+
     [HideInInspector]public State state;
     [HideInInspector]public int turnNumber = 0;
     [HideInInspector]public GameObject commandPost;
@@ -432,6 +436,30 @@ public class GameManager : MonoBehaviour
         {
             attackPanel.SetActive(false);
             choosePanel.SetActive(false);
+        }
+
+        if(setupCamera.activeSelf && isStarted)
+        {
+            Camera cam = Camera.allCameras[0];
+            //If Q is pressed or scroll wheel moved, lower camera size
+            if (Input.GetKey(KeyCode.Q) || Input.GetAxis("Mouse ScrollWheel") > 0f)
+            {
+                cam.orthographicSize -= zoomSpeed/8;
+                if(cam.orthographicSize < minZoom)
+                {
+                    cam.orthographicSize = minZoom;
+                }
+            }
+
+            //If E is pressed or scroll wheel moved, raise camera size
+            if (Input.GetKey(KeyCode.E) || Input.GetAxis("Mouse ScrollWheel") < 0f)
+            {
+                cam.orthographicSize += zoomSpeed/8;
+                if(cam.orthographicSize > maxZoom)
+                {
+                    cam.orthographicSize = maxZoom;
+                }
+            }
         }
     }
 
