@@ -27,7 +27,10 @@ public class Toggle : MonoBehaviour
                 {
                     units.Remove(item);
                 }
-                item.transform.Find("Influence").gameObject.SetActive(false);
+                else
+                {
+                    item.transform.Find("Influence").gameObject.SetActive(false);
+                }
             }
         }
 
