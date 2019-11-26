@@ -23,6 +23,10 @@ public class Toggle : MonoBehaviour
         {
             foreach (GameObject item in units)
             {
+                if (item == null)
+                {
+                    units.Remove(item);
+                }
                 item.transform.Find("Influence").gameObject.SetActive(false);
             }
         }
