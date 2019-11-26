@@ -460,6 +460,38 @@ public class GameManager : MonoBehaviour
                     cam.orthographicSize = maxZoom;
                 }
             }
+            if (Input.mousePosition.y > Screen.height * 0.95f && Input.mousePosition.y <= Screen.height)
+            {
+                cam.transform.position = new Vector3(cam.transform.position.x - 8.0f * Time.deltaTime, cam.transform.position.y, cam.transform.position.z);
+            }
+            if (Input.mousePosition.y < Screen.height * 0.05f && Input.mousePosition.y >= 0)
+            {
+                cam.transform.position = new Vector3(cam.transform.position.x + 8.0f * Time.deltaTime, cam.transform.position.y, cam.transform.position.z);
+            }
+            if (Input.mousePosition.x > Screen.width * 0.95f && Input.mousePosition.x <= Screen.width)
+            {
+                cam.transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y, cam.transform.position.z + 8.0f * Time.deltaTime);
+            }
+            if (Input.mousePosition.x < Screen.width * 0.05f && Input.mousePosition.x >= 0)
+            {
+                cam.transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y, cam.transform.position.z - 8.0f * Time.deltaTime);
+            }
+            if (cam.transform.position.x > 55)
+            {
+                cam.transform.position = new Vector3(55, cam.transform.position.y, cam.transform.position.z);
+            }
+            if (cam.transform.position.x < 0)
+            {
+                cam.transform.position = new Vector3(0, cam.transform.position.y, cam.transform.position.z);
+            }
+            if (cam.transform.position.z > 83)
+            {
+                cam.transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y, 83);
+            }
+            if (cam.transform.position.z < -7)
+            {
+                cam.transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y, -7);
+            }
         }
     }
 
