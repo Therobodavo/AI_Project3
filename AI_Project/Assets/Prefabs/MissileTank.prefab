@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3720216690861275887}
   - component: {fileID: 8541077424275565064}
   - component: {fileID: 356570908759149993}
+  - component: {fileID: 5300704746385502311}
   m_Layer: 2
   m_Name: Influence
   m_TagString: Influence
@@ -93,6 +94,20 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &5300704746385502311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2962657394328517390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 731cc16f9046a2f45a8eac0f662f2242, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  emptyPrefab: {fileID: 752371442391759208, guid: fca4d725f492e454da780a0989b62e52,
+    type: 3}
 --- !u!1 &4717191220979665778
 GameObject:
   m_ObjectHideFlags: 0
